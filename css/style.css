@@ -90,7 +90,7 @@ button.dropdown-item span {
 .hidden {
   display: none;
 }
-.list-items,
+/* .list-items,
 .list-items-filter {
   
  max-height: 200px;
@@ -101,7 +101,7 @@ button.dropdown-item span {
 }
 .dropdown form {
   margin-top: 0;
-}
+}*/
 ul li {
   font-size: 14px;
-}
+} 

@@ -32,13 +32,19 @@ const cardRecipeTemplate = (recipe) => {
 }
 
 const ingredientsOptions = (ingredients) => {
-  // console.log(ingredients);
   return html = `${ingredients.map(ing =>{
     return `<li>
     <button class="dropdown-item d-flex justify-content-between align-items-center " type="button"><span>${ing}</span><i class=" button-close fa-solid fa-circle-xmark hidden"></i></button>
   </li>`}).join('')}                      
   `;
 }
+// const ingredientsOptions = (ing) => {
+//     return html = `${ingredients.map(ing =>{
+//       return `<li>
+//       <button class="dropdown-item d-flex justify-content-between align-items-center " type="button"><span>${ing}</span><i class=" button-close fa-solid fa-circle-xmark hidden"></i></button>
+//     </li>`}).join('')}                      
+//     `;
+//   }
 const appliancesOptions = (appliances) => {
 // console.log(appliances);
 return html = `${appliances.map(item =>{
