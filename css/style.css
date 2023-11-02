@@ -1,0 +1,107 @@
+:root{
+  --anton: "Anton", sans-serif;
+  --manrop:'Manrope', sans-serif;
+  --light-gray: #7A7A7A;
+  --yellow: #FFD15B;
+}
+.bg-image {
+  background-image: url('/assets/image_recipes/Recette28.jpg');
+  background-size: cover;
+  
+  /* background-repeat: no-repeat; */
+  height: 500px;
+}
+
+h1, h1 span {
+  font-family: var(--anton);
+}
+* {
+  font-family: var(--manrop);
+}
+.search-box{
+  position: relative;
+}
+.search-box i{
+  position: absolute;
+  transform: translate(50%, 50%) ;
+  
+}
+.form-control.is-valid {
+  border-color:gray;
+  background-image: url("/assets/logo/magnyfying.svg");
+}
+.search-menu {
+  list-style-type: none;
+  padding-left: 0;
+}
+main header h2 {
+  font-family: var(--anton);
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+.thumbnail-box {
+  position: relative;
+  /* height: 50%; */
+}
+.thumbnail-box span {
+  position: absolute;
+  right: 20px;
+  margin-top: 20px;
+  background-color: var(--yellow);
+  padding: 5px 15px 5px 15px;
+  border-radius: 20px;
+}
+main {
+  height: 100%;
+}
+.card-img-top {
+  object-fit: cover;
+  height: 200px
+}
+.card-title {
+  font-family: var(--manrop);
+  font-weight: 300 !important;
+}
+.dropdown{
+  position: relative
+}
+
+/* collapse */
+.accordion-button {
+  font-family: var(--manrop);
+}
+.accordion-button:not(.collapsed){
+  background-color: white;
+  box-shadow:none;
+}
+/* hover effect on tag name */
+button.dropdown-item:hover{
+  font-weight: 700;
+
+}
+button.dropdown-item span {
+  width: 100%;
+  /* text-align: end; */
+}
+/* display close btn of tag name*/
+/* element hidden */
+.hidden {
+  display: none;
+}
+.list-items,
+.list-items-filter {
+  
+ max-height: 200px;
+}
+.dropdown button,
+.dropdown form {
+  min-width: 100px;
+}
+.dropdown form {
+  margin-top: 0;
+}
+ul li {
+  font-size: 14px;
+}
