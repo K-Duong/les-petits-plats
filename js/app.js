@@ -1,18 +1,31 @@
 //////////////// DOM ELEMENTS//////////////////
-
-/////////////// FUNCTIONS //////////////////
-// filter by Search Bar
 //Doms els
 const inputSearchBar = document.querySelector(".nav-search-bar");
-const listOfIngOptions = document.querySelector(".ingredients-options");
-const listOfAppliancesOptions = document.querySelector(".appliances-options");
-const listOfUstensilsOptions = document.querySelector(".ustensils-options");
+const inputIngredient = document.querySelector(".ingredient-input");
+const inputAppliance = document.querySelector(".appliance-input");
+const inputUstensil = document.querySelector(".ustensil-input");
+const domListOfIngOptions = document.querySelector(".ingredients-options");
+const domListOfAppliancesOptions = document.querySelector(".appliances-options");
+const domListOfUstensilsOptions = document.querySelector(".ustensils-options");
 const numOfFoundRecipes = document.querySelector(".number-result");
 const cardsRecipesContainer = document.querySelector(".result-container");
 
+const collapseMenuIng = document.querySelector('#collapseMenuIngredients');
+
+const tagContainer = document.querySelector(".tag-container");
+
+
+
 //variables
-let currentStr;
-let selectedIngredients, selectedAppliances, selectedUstensils;
+let currentStr, currentRecipes, currentListOfTagName, recipesAdvancedSearch;
+let selectedIngredients, selectedAppliances, selectedUstensils ;
+let filterListIng = [];
+let filterListAppliance = [];
+let filterListUstensils = [];
+let listOfIngOptions, listOftAppOptions, listOfUstOptions;
+
+/////////////// FUNCTIONS //////////////////
+// filter by Search Bar
 
 //general functions
 const normalizeStr = (str) => {
@@ -37,6 +50,17 @@ const filterByIngredients = (str, currentRecipes) => {
     if (ingsList.some((ing) => ing.includes(str))) return recipe;
   });
 };
+// const filterByAppliance = (str, data) => {
+//   const applianceRecipe = normalizeStr(data.appliance);
+//   const applianceFilterCondition = applianceRecipe.includes(str);
+//   // console.log(applianceFilterCondition);
+//   if (applianceFilterCondition) return applianceFilterCondition;
+// };
+// const filterByUstensil = (str, data) => {
+//   const ustensilsList = data.ustensils.map((el) => normalizeStr(el));
+//   const ustensilFilterCondition = ustensilsList.some((el) => el.includes(str));
+//   if (ustensilFilterCondition) return ustensilFilterCondition;
+// };
 //filter list of options
 const filterListOfOptionsIngredients = (currentRecipes) => [
   ...new Set(
@@ -59,35 +83,53 @@ const filterListOfOptionsUstensils = (currentRecipes) => [
       .sort()
   ),
 ];
+// functions for classList
+const addClassList = (el, ...nameOfClass) => {
+  el.classList.add(...nameOfClass);
+};
+const removeClassList = (el, ...nameOfClass) => {
+  el.classList.remove(...nameOfClass);
+};
 // function to display data to interface
 const removeInnerHTML = (el) => {
   el.innerHTML = "";
 };
 const displayErrorMessage = (str) => {
-  // removeResultContainer();
   removeInnerHTML(cardsRecipesContainer);
   cardsRecipesContainer.innerHTML = `<div class='col-12 text-center text-danger fs-4 fw-bold w-100'>Aucune recette ne contient "${str}" vous pouvez chercher "tarte aux pommes", "poisson", etc.</div>`;
 };
-const updateNumberOfFoundRecipes = (currentRecipes) => {
-  if (currentRecipes.length > 0) {
+const updateNumberOfFoundRecipes = (arrRecipes) => {
+  if (arrRecipes.length > 0) {
     numOfFoundRecipes.textContent =
-      currentRecipes.length.toString().padStart(2, "0") +
+    arrRecipes.length.toString().padStart(2, "0") +
       `${
-        currentRecipes.length === 1 ? " recette trouvée" : " recettes trouvées"
+        arrRecipes.length === 1 ? " recette trouvée" : " recettes trouvées"
       } `;
-  } else if (currentRecipes.length === 0) {
+  } else if (arrRecipes.length === 0) {
     numOfFoundRecipes.textContent = "00 recette retrouvée";
   } else {
     numOfFoundRecipes.textContent = "1500 recettes";
   }
 };
-const displayOptionsList = (selectedList, elDom, card) => {
-  removeInnerHTML(elDom);
-  elDom.insertAdjacentHTML("beforeend", card(selectedList));
+const displayOptionsList = (selectedList, elList) => {
+  removeInnerHTML(elList);
+  elList.insertAdjacentHTML("beforeend", optionTemplate(selectedList));
+  const selectedOption = elList.querySelectorAll("li");
+  // console.log(selectedOption);
+  // debounce input advanced search
+ ;
+
+  //event handler select an option
+  
+    
+    //filter by selected list
+   
+    // update style of 
+  
 };
-const displayCardRecipes = (currentRecipes) => {
+const displayCardRecipes = (arrRecipes) => {
   removeInnerHTML(cardsRecipesContainer);
-  currentRecipes.forEach((recipe) => {
+  arrRecipes.forEach((recipe) => {
     cardsRecipesContainer.insertAdjacentHTML(
       "beforeend",
       cardRecipeTemplate(recipe)
@@ -95,9 +137,25 @@ const displayCardRecipes = (currentRecipes) => {
   });
 };
 
+const displayTagName = (listOfTag) => {
+  removeInnerHTML(tagContainer);
+  listOfTag.forEach(tag => {
+    tagContainer.insertAdjacentHTML(
+      "beforeend",
+      tagName(tag)
+    );
+  });
+};
+const updateListOfTagName = () => {
+  listTagResult = [...new Set(filterListIng.concat(filterListAppliance).concat(filterListUstensils))];
+}
 // filter by Searchbar
-const cbSearchRecipes = (val, elInput, currentRecipes) => {
+const cbSearchRecipes = (val, elInput) => {
   if (val === elInput.value) {
+    // remove old data 
+    const domToRemove = [domListOfIngOptions, domListOfAppliancesOptions, domListOfUstensilsOptions, tagContainer, cardsRecipesContainer, numOfFoundRecipes];
+    domToRemove.forEach(dom => removeInnerHTML(dom));
+    filterListIng = filterListAppliance = filterListUstensils = [];
     const input = elInput.value;
     // console.log(input);
 
@@ -114,38 +172,39 @@ const cbSearchRecipes = (val, elInput, currentRecipes) => {
     // console.log(currentRecipes);
 
     if (currentRecipes.length > 0) {
-      selectedIngredients = filterListOfOptionsIngredients(currentRecipes);
-      selectedAppliances = filterListOfOptionsAppliances(currentRecipes);
-      selectedUstensils = filterListOfOptionsUstensils(currentRecipes);
+      listOfIngOptions = filterListOfOptionsIngredients(currentRecipes);
+      listOftAppOptions = filterListOfOptionsAppliances(currentRecipes);
+      listOfUstOptions = filterListOfOptionsUstensils(currentRecipes);
       // display interface
       /// 1.list of options for:
       ////1.1. Ingredients options
-      console.log(selectedIngredients);
+      console.log(listOfIngOptions);
       displayOptionsList(
-        selectedIngredients,
         listOfIngOptions,
-        ingredientsOptions
+        domListOfIngOptions,
       );
       ////1.2. Appliances options
-      console.log(selectedAppliances);
+      console.log(listOftAppOptions);
       displayOptionsList(
-        selectedAppliances,
-        listOfAppliancesOptions,
-        appliancesOptions
+        listOftAppOptions,
+        domListOfAppliancesOptions,
       );
 
       ////1.3. Ustensils options
-      console.log(selectedUstensils);
+      console.log(listOfUstOptions);
       displayOptionsList(
-        selectedUstensils,
-        listOfUstensilsOptions,
-        ustensilsOptions
+        listOfUstOptions,
+        domListOfUstensilsOptions,
       );
-
       /// 2. number of found recipes
       updateNumberOfFoundRecipes(currentRecipes);
       /// 3. card recipes
       displayCardRecipes(currentRecipes);
+      
+      recipesAdvancedSearch = [...currentRecipes];
+
+      // addEventHandler to advanced search
+      addEventHandlerSearchByIngredient();
     } else {
       // display error
       updateNumberOfFoundRecipes(currentRecipes)
@@ -154,21 +213,93 @@ const cbSearchRecipes = (val, elInput, currentRecipes) => {
   }
 };
 
+// event handler
+const addEventHandlerSearchByIngredient = () => {
+  inputIngredient.addEventListener("input", (e) => {
+  const value = e.target.value;
+  // console.log(recipesAdvancedSearch);
+  const listContainer = inputIngredient.nextElementSibling ;
+  // console.log(recipesAdvancedSearch);
+  debounceAdvancedSearchByIngredient(value, e.target, listContainer);
+})
+}
+// TODO: à remettre en fonction générale
+const styleSelectedOption = (btn) => {
+  const icon = btn.querySelector("i");
+  addClassList(btn, "bg-warning","fw-bolder-hover");
+  // removeClassList(icon, "hidden");
+};
+// advanced Search 
+const cbAdvancedSearchByIngredients = (val, elInput, elList ) =>{
+  if (val === elInput.value) {
+    const input = elInput.value;
+
+    // 0. normaliseStr
+    const normalizeInput = normalizeStr(input);
+
+    //update filter option
+    const suggestionList = listOfIngOptions.filter(option => normalizeStr(option).includes(normalizeInput));
+    
+    removeInnerHTML(elList);
+    elList.insertAdjacentHTML("beforeend", optionTemplate(suggestionList));
+
+    //event handler option button
+    const optionsNodeList = elList.querySelectorAll("li");
+    
+      // add event handler for each option
+        optionsNodeList.forEach(option => {
+          option.addEventListener("click", (e) => {
+            // update new list with seleted option bg-warning
+            if(filterListIng.includes(e.target.textContent)) return;
+            console.log(recipesAdvancedSearch);
+
+            filterListIng.push(e.target.textContent);
+            recipesAdvancedSearch = filterByIngredients(normalizeStr(e.target.textContent), recipesAdvancedSearch);
+            // console.log(filterListIng);
+
+            removeClassList(collapseMenuIng, "show");
+            //add card tag name
+            
+            updateListOfTagName(); 
+            // console.log("list tag", listTagResult);
+
+            displayTagName(listTagResult);
+            // update number of results
+            updateNumberOfFoundRecipes(recipesAdvancedSearch);
+            //update cards recipes
+            displayCardRecipes(recipesAdvancedSearch);
+            
+          })
+        })
+
+    
+  };
+};
+
 //Debounce
-const debounce = (val, elInput, currentRecipes) => {
+const debounce = (val, elInput) => {
   setTimeout(() => {
-    cbSearchRecipes(val, elInput, currentRecipes);
+    cbSearchRecipes(val, elInput);
   }, 300);
 };
-//filter by Search bar
-inputSearchBar.addEventListener("input", (e) => {
-  let currentRecipes = recipes;
+const debounceAdvancedSearchByIngredient = (val, elInput, elList) => {
+  setTimeout(() => {
+    cbAdvancedSearchByIngredients(val, elInput,elList);
+  }, 300);
+};
+//add event handler by Search bar
+const addEHandlerSearchBar = () => {
+  inputSearchBar.addEventListener("input", (e) => {
+  currentRecipes = recipes;
   const value = e.target.value;
   // if input < 3 characters is not valid
   if (value.length < 3) return;
   // if input is valid
-  debounce(value, e.target, currentRecipes);
+  // debounce(value, e.target, currentRecipes);
+  debounce(value, e.target);
 });
+}
+
 
 // filter by advanced Search
 //1. filter by Ingredients
@@ -176,3 +307,10 @@ inputSearchBar.addEventListener("input", (e) => {
 //3. filter by Ustensils
 
 ////////////////// APP //////////////////
+const init = () => {
+  addEHandlerSearchBar();
+  //remove all content
+
+}
+
+init();

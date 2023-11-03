@@ -81,6 +81,10 @@ button.dropdown-item:hover{
   font-weight: 700;
 
 }
+
+button.dropdown-item.bg-warning:hover i {
+  display: block;
+} 
 button.dropdown-item span {
   width: 100%;
   /* text-align: end; */

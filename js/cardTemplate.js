@@ -30,37 +30,38 @@ const cardRecipeTemplate = (recipe) => {
 </div>
 `
 }
+const optionTemplate = (listOfOptions) => {
+  return `${listOfOptions.map(option =>{
+    return `<li data-name="${option}">
+    <button class="dropdown-item d-flex justify-content-between align-items-center " type="button"><span>${option}</span><i class=" button-close fa-solid fa-circle-xmark hidden"></i></button>
+  </li>`}).join('')}                      
+  `;
+}
 
-const ingredientsOptions = (ingredients) => {
-  return html = `${ingredients.map(ing =>{
-    return `<li>
-    <button class="dropdown-item d-flex justify-content-between align-items-center " type="button"><span>${ing}</span><i class=" button-close fa-solid fa-circle-xmark hidden"></i></button>
-  </li>`}).join('')}                      
-  `;
-}
-// const ingredientsOptions = (ing) => {
-//     return html = `${ingredients.map(ing =>{
-//       return `<li>
-//       <button class="dropdown-item d-flex justify-content-between align-items-center " type="button"><span>${ing}</span><i class=" button-close fa-solid fa-circle-xmark hidden"></i></button>
-//     </li>`}).join('')}                      
-//     `;
-//   }
-const appliancesOptions = (appliances) => {
-// console.log(appliances);
-return html = `${appliances.map(item =>{
-  return `<li>
-  <button class="dropdown-item d-flex justify-content-between align-items-center" type="button"><span>${item}</span><i class=" button-close fa-solid fa-circle-xmark hidden"></i></button>
-</li>`}).join('')}                      
-`;
-}
-const ustensilsOptions = (ustensils) => {
-  // console.log(ustensils);
-  return html = `${ustensils.map(item =>{
-    return `<li>
-    <button class="dropdown-item d-flex justify-content-between align-items-center "type="button"><span>${item}</span><i class=" button-close fa-solid fa-circle-xmark hidden"></i></button>
-  </li>`}).join('')}                      
-  `;
-}
+// const ingredientsOptions = (ingredients) => {
+//   return html = `${ingredients.map(ing =>{
+//     return `<li>
+//     <button class="dropdown-item d-flex justify-content-between align-items-center " type="button"><span>${ing}</span><i class=" button-close fa-solid fa-circle-xmark hidden"></i></button>
+//   </li>`}).join('')}                      
+//   `;
+// }
+
+// const appliancesOptions = (appliances) => {
+// // console.log(appliances);
+// return html = `${appliances.map(item =>{
+//   return `<li>
+//   <button class="dropdown-item d-flex justify-content-between align-items-center" type="button"><span>${item}</span><i class=" button-close fa-solid fa-circle-xmark hidden"></i></button>
+// </li>`}).join('')}                      
+// `;
+// }
+// const ustensilsOptions = (ustensils) => {
+//   // console.log(ustensils);
+//   return html = `${ustensils.map(item =>{
+//     return `<li>
+//     <button class="dropdown-item d-flex justify-content-between align-items-center "type="button"><span>${item}</span><i class=" button-close fa-solid fa-circle-xmark hidden"></i></button>
+//   </li>`}).join('')}                      
+//   `;
+// }
 
 const tagName = (el) => {
   return `
