@@ -65,7 +65,7 @@ const optionTemplate = (listOfOptions) => {
 
 const tagName = (el) => {
   return `
-  <button type="button" class="card-tag btn btn-warning p-3 me-3">
+  <button data-name="${el}" type="button" class="card-tag btn btn-warning p-3 me-3">
   ${el} <span class="ms-5"><i class=" button-close fa-solid fa-xmark"></i></span>
   </button>`
 }

@@ -76,13 +76,23 @@ main {
   background-color: white;
   box-shadow:none;
 }
+
+.accordion-body {
+  padding: 0;
+}
+/* .accordion-body input {
+  padding: 1rem 1.25rem;
+} */
 /* hover effect on tag name */
 button.dropdown-item:hover{
   font-weight: 700;
 
 }
-
-button.dropdown-item.bg-warning:hover i {
+li {
+  padding: 0.25rem 1.25rem;
+  margin-bottom: 0.25rem;
+}
+li.bg-warning:hover i {
   display: block;
 } 
 button.dropdown-item span {

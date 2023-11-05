@@ -5,20 +5,20 @@ const inputIngredient = document.querySelector(".ingredient-input");
 const inputAppliance = document.querySelector(".appliance-input");
 const inputUstensil = document.querySelector(".ustensil-input");
 const domListOfIngOptions = document.querySelector(".ingredients-options");
-const domListOfAppliancesOptions = document.querySelector(".appliances-options");
+const domListOfAppliancesOptions = document.querySelector(
+  ".appliances-options"
+);
 const domListOfUstensilsOptions = document.querySelector(".ustensils-options");
 const numOfFoundRecipes = document.querySelector(".number-result");
 const cardsRecipesContainer = document.querySelector(".result-container");
 
-const collapseMenuIng = document.querySelector('#collapseMenuIngredients');
+const collapseMenuIng = document.querySelector("#collapseMenuIngredients");
 
 const tagContainer = document.querySelector(".tag-container");
 
-
-
 //variables
 let currentStr, currentRecipes, currentListOfTagName, recipesAdvancedSearch;
-let selectedIngredients, selectedAppliances, selectedUstensils ;
+let selectedIngredients, selectedAppliances, selectedUstensils;
 let filterListIng = [];
 let filterListAppliance = [];
 let filterListUstensils = [];
@@ -36,20 +36,28 @@ const normalizeStr = (str) => {
     .toLowerCase();
 };
 // Filter result :
-const filterByName = (str, currentRecipes) =>
-  currentRecipes.filter((recipe) => normalizeStr(recipe.name).includes(str));
-const filterByDescription = (str, currentRecipes) =>
-  currentRecipes.filter((recipe) =>
-    normalizeStr(recipe.description).includes(str)
-  );
-const filterByIngredients = (str, currentRecipes) => {
-  return currentRecipes.filter((recipe) => {
+const filterByName = (str, arrRecipes) =>
+  arrRecipes.filter((recipe) => normalizeStr(recipe.name).includes(str));
+const filterByDescription = (str, arrRecipes) =>
+  arrRecipes.filter((recipe) => normalizeStr(recipe.description).includes(str));
+const filterByIngredients = (str, arrRecipes) => {
+  return arrRecipes.filter((recipe) => {
     const ingsList = recipe.ingredients.map((ing) =>
       normalizeStr(ing.ingredient)
     );
     if (ingsList.some((ing) => ing.includes(str))) return recipe;
   });
 };
+// TODO: recreate function
+const findByIng2 = (str, data) => {
+  const ingredientsList = data.ingredients.map((ing) =>
+    normalizeStr(ing.ingredient)
+  );
+  // console.log(ingredientsList);
+  const ingFilterConditon = ingredientsList.some((ing) => ing.includes(str));
+  if (ingFilterConditon) return ingFilterConditon;
+};
+const filterByAppliance = () => {};
 // const filterByAppliance = (str, data) => {
 //   const applianceRecipe = normalizeStr(data.appliance);
 //   const applianceFilterCondition = applianceRecipe.includes(str);
@@ -101,10 +109,8 @@ const displayErrorMessage = (str) => {
 const updateNumberOfFoundRecipes = (arrRecipes) => {
   if (arrRecipes.length > 0) {
     numOfFoundRecipes.textContent =
-    arrRecipes.length.toString().padStart(2, "0") +
-      `${
-        arrRecipes.length === 1 ? " recette trouvée" : " recettes trouvées"
-      } `;
+      arrRecipes.length.toString().padStart(2, "0") +
+      `${arrRecipes.length === 1 ? " recette trouvée" : " recettes trouvées"} `;
   } else if (arrRecipes.length === 0) {
     numOfFoundRecipes.textContent = "00 recette retrouvée";
   } else {
@@ -117,15 +123,12 @@ const displayOptionsList = (selectedList, elList) => {
   const selectedOption = elList.querySelectorAll("li");
   // console.log(selectedOption);
   // debounce input advanced search
- ;
 
   //event handler select an option
-  
-    
-    //filter by selected list
-   
-    // update style of 
-  
+
+  //filter by selected list
+
+  // update style of
 };
 const displayCardRecipes = (arrRecipes) => {
   removeInnerHTML(cardsRecipesContainer);
@@ -139,22 +142,30 @@ const displayCardRecipes = (arrRecipes) => {
 
 const displayTagName = (listOfTag) => {
   removeInnerHTML(tagContainer);
-  listOfTag.forEach(tag => {
-    tagContainer.insertAdjacentHTML(
-      "beforeend",
-      tagName(tag)
-    );
+  listOfTag.forEach((tag) => {
+    tagContainer.insertAdjacentHTML("beforeend", tagName(tag));
   });
 };
 const updateListOfTagName = () => {
-  listTagResult = [...new Set(filterListIng.concat(filterListAppliance).concat(filterListUstensils))];
-}
+  listTagResult = [
+    ...new Set(
+      filterListIng.concat(filterListAppliance).concat(filterListUstensils)
+    ),
+  ];
+};
 // filter by Searchbar
 const cbSearchRecipes = (val, elInput) => {
   if (val === elInput.value) {
-    // remove old data 
-    const domToRemove = [domListOfIngOptions, domListOfAppliancesOptions, domListOfUstensilsOptions, tagContainer, cardsRecipesContainer, numOfFoundRecipes];
-    domToRemove.forEach(dom => removeInnerHTML(dom));
+    // remove old data
+    const domToRemove = [
+      domListOfIngOptions,
+      domListOfAppliancesOptions,
+      domListOfUstensilsOptions,
+      tagContainer,
+      cardsRecipesContainer,
+      numOfFoundRecipes,
+    ];
+    domToRemove.forEach((dom) => removeInnerHTML(dom));
     filterListIng = filterListAppliance = filterListUstensils = [];
     const input = elInput.value;
     // console.log(input);
@@ -179,35 +190,26 @@ const cbSearchRecipes = (val, elInput) => {
       /// 1.list of options for:
       ////1.1. Ingredients options
       console.log(listOfIngOptions);
-      displayOptionsList(
-        listOfIngOptions,
-        domListOfIngOptions,
-      );
+      displayOptionsList(listOfIngOptions, domListOfIngOptions);
       ////1.2. Appliances options
       console.log(listOftAppOptions);
-      displayOptionsList(
-        listOftAppOptions,
-        domListOfAppliancesOptions,
-      );
+      displayOptionsList(listOftAppOptions, domListOfAppliancesOptions);
 
       ////1.3. Ustensils options
       console.log(listOfUstOptions);
-      displayOptionsList(
-        listOfUstOptions,
-        domListOfUstensilsOptions,
-      );
+      displayOptionsList(listOfUstOptions, domListOfUstensilsOptions);
       /// 2. number of found recipes
       updateNumberOfFoundRecipes(currentRecipes);
       /// 3. card recipes
       displayCardRecipes(currentRecipes);
-      
+
       recipesAdvancedSearch = [...currentRecipes];
 
       // addEventHandler to advanced search
       addEventHandlerSearchByIngredient();
     } else {
       // display error
-      updateNumberOfFoundRecipes(currentRecipes)
+      updateNumberOfFoundRecipes(currentRecipes);
       displayErrorMessage(input);
     }
   }
@@ -216,21 +218,21 @@ const cbSearchRecipes = (val, elInput) => {
 // event handler
 const addEventHandlerSearchByIngredient = () => {
   inputIngredient.addEventListener("input", (e) => {
-  const value = e.target.value;
-  // console.log(recipesAdvancedSearch);
-  const listContainer = inputIngredient.nextElementSibling ;
-  // console.log(recipesAdvancedSearch);
-  debounceAdvancedSearchByIngredient(value, e.target, listContainer);
-})
-}
+    const value = e.target.value;
+    // console.log(recipesAdvancedSearch);
+    const listContainer = inputIngredient.nextElementSibling;
+    // console.log(recipesAdvancedSearch);
+    debounceAdvancedSearchByIngredient(value, e.target, listContainer);
+  });
+};
 // TODO: à remettre en fonction générale
 const styleSelectedOption = (btn) => {
   const icon = btn.querySelector("i");
-  addClassList(btn, "bg-warning","fw-bolder-hover");
+  addClassList(btn, "bg-warning", "fw-bolder-hover");
   // removeClassList(icon, "hidden");
 };
-// advanced Search 
-const cbAdvancedSearchByIngredients = (val, elInput, elList ) =>{
+// advanced Search
+const cbAdvancedSearchByIngredients = (val, elInput, elList) => {
   if (val === elInput.value) {
     const input = elInput.value;
 
@@ -238,42 +240,109 @@ const cbAdvancedSearchByIngredients = (val, elInput, elList ) =>{
     const normalizeInput = normalizeStr(input);
 
     //update filter option
-    const suggestionList = listOfIngOptions.filter(option => normalizeStr(option).includes(normalizeInput));
-    
+    const suggestionList = listOfIngOptions.filter((option) =>
+      normalizeStr(option).includes(normalizeInput)
+    );
+
     removeInnerHTML(elList);
     elList.insertAdjacentHTML("beforeend", optionTemplate(suggestionList));
 
     //event handler option button
     const optionsNodeList = elList.querySelectorAll("li");
-    
-      // add event handler for each option
-        optionsNodeList.forEach(option => {
-          option.addEventListener("click", (e) => {
-            // update new list with seleted option bg-warning
-            if(filterListIng.includes(e.target.textContent)) return;
-            console.log(recipesAdvancedSearch);
 
-            filterListIng.push(e.target.textContent);
-            recipesAdvancedSearch = filterByIngredients(normalizeStr(e.target.textContent), recipesAdvancedSearch);
-            // console.log(filterListIng);
+    // add event handler for each option
+    optionsNodeList.forEach((option) => {
+      option.addEventListener("click", (e) => {
+        console.log("filter list ing", filterListIng);
+        if (filterListIng.includes(e.target.textContent)) return;
+        
+        // update new list with seleted option bg-warning
+        filterListIng.push(e.target.textContent);
+        removeInnerHTML(elList);
+        elList.insertAdjacentHTML("beforeend", optionTemplate(filterListIng));
 
-            removeClassList(collapseMenuIng, "show");
-            //add card tag name
-            
-            updateListOfTagName(); 
-            // console.log("list tag", listTagResult);
-
-            displayTagName(listTagResult);
-            // update number of results
-            updateNumberOfFoundRecipes(recipesAdvancedSearch);
-            //update cards recipes
-            displayCardRecipes(recipesAdvancedSearch);
-            
+        elList.querySelectorAll("li").forEach((li) => styleSelectedOption(li));
+        const liFilter = elList.querySelectorAll("li.bg-warning");
+        elList.insertAdjacentHTML(
+          "beforeend",
+          optionTemplate(listOfIngOptions)
+        );
+        const liOriginal = elList.querySelectorAll("li:not(.bg-warning)");
+        // console.log(liOriginal);
+        liFilter.forEach((li1) =>
+          liOriginal.forEach((li2) => {
+            if (
+              normalizeStr(li1.dataset.name) === normalizeStr(li2.dataset.name)
+            )
+              addClassList(li2, "hidden");
           })
-        })
+        );
 
-    
-  };
+        recipesAdvancedSearch = filterByIngredients(
+          normalizeStr(e.target.textContent),
+          recipesAdvancedSearch
+        );
+        // console.log(filterListIng);
+        removeClassList(collapseMenuIng, "show");
+        //add card tag name
+        updateListOfTagName();
+        displayTagName(listTagResult);
+        // update number of results
+        updateNumberOfFoundRecipes(recipesAdvancedSearch);
+        //update cards recipes
+        displayCardRecipes(recipesAdvancedSearch);
+        // clear input
+        inputIngredient.value = "";
+
+          //event handler to remove seletedOption
+          liFilter.forEach(li => {
+            const iconClose = li.querySelector(".button-close");
+            iconClose.addEventListener("click", (e) => {
+              // console.log("click");
+
+              //hidden li filter and display li orginial
+              addClassList(li, "hidden");
+              liOriginal.forEach((li2) => {
+                if (
+                  normalizeStr(li.dataset.name) === normalizeStr(li2.dataset.name)
+                )
+                  removeClassList(li2, "hidden");
+              });
+              removeClassList(collapseMenuIng, "show");
+
+              // update list of tag name and display tag name
+              const index1 = listTagResult.findIndex(el => el === li.dataset.name);
+              // console.log(index);
+              listTagResult.splice(index1, 1);
+              const index2 = filterListIng.findIndex(el => el === li.dataset.name);
+              filterListIng.splice(index2, 1);
+              // console.log(listTagResult);
+              displayTagName(listTagResult);
+                // TODO: recipesAdvancedSearch = array of all  filterbyIng, filterByApp, filterByUst
+              recipesAdvancedSearch = [...new Set(...listTagResult.map(tag => currentRecipes.filter(recipe => {
+                if (findByIng2(normalizeStr(tag),recipe))
+                return recipe;
+                })))];
+                console.log('recipesAdvancedSearch',recipesAdvancedSearch);
+
+              // if recipesAdvancedSearch.length > 0
+              if(recipesAdvancedSearch.length > 0) {
+                //  update number of result
+              updateNumberOfFoundRecipes(recipesAdvancedSearch)
+              // update cards recipes
+              displayCardRecipes(recipesAdvancedSearch)
+              } else {
+                recipesAdvancedSearch = [...currentRecipes]
+                updateNumberOfFoundRecipes(recipesAdvancedSearch);
+                displayCardRecipes(recipesAdvancedSearch);
+              }
+              
+
+            });
+          }); 
+      });
+    });
+  }
 };
 
 //Debounce
@@ -284,22 +353,21 @@ const debounce = (val, elInput) => {
 };
 const debounceAdvancedSearchByIngredient = (val, elInput, elList) => {
   setTimeout(() => {
-    cbAdvancedSearchByIngredients(val, elInput,elList);
+    cbAdvancedSearchByIngredients(val, elInput, elList);
   }, 300);
 };
 //add event handler by Search bar
 const addEHandlerSearchBar = () => {
   inputSearchBar.addEventListener("input", (e) => {
-  currentRecipes = recipes;
-  const value = e.target.value;
-  // if input < 3 characters is not valid
-  if (value.length < 3) return;
-  // if input is valid
-  // debounce(value, e.target, currentRecipes);
-  debounce(value, e.target);
-});
-}
-
+    currentRecipes = recipes;
+    const value = e.target.value;
+    // if input < 3 characters is not valid
+    if (value.length < 3) return;
+    // if input is valid
+    // debounce(value, e.target, currentRecipes);
+    debounce(value, e.target);
+  });
+};
 
 // filter by advanced Search
 //1. filter by Ingredients
@@ -310,7 +378,6 @@ const addEHandlerSearchBar = () => {
 const init = () => {
   addEHandlerSearchBar();
   //remove all content
-
-}
+};
 
 init();
