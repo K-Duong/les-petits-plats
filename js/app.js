@@ -22,6 +22,14 @@ const accordionBodyDoms = document.querySelectorAll(".accordion-body");
 
 //variables
 let currentRecipes, currentListOfTagName, recipesAdvancedSearch;
+
+let filteredRecipesByIng = [];
+let filteredRecipesByApp = [];
+let filteredRecipesByUst = [];
+
+let filteredRecipesByDes = [];
+let filteredRecipesByName = [];
+
 let selectedIngredients = [];
 let selectedAppliances = [];
 let selectedUstensils = [];
@@ -35,13 +43,14 @@ let listOfIngOptions, listOfAppOptions, listOfUstOptions;
 
 //general functions
 const closeCollapseMenu = () => {
-  btnsCollapse.forEach((btn) => {
+  for(let btn of btnsCollapse ) {
     btn.setAttribute("aria-expanded", "false");
     addClassList(btn, "collapsed");
-  });
-  collapseMenus.forEach((menu) => {
+  };
+  for (let menu of collapseMenus) {
     removeClassList(menu, "show");
-  });
+
+  }
 };
 const normalizeStr = (str) => {
   return str
@@ -51,18 +60,48 @@ const normalizeStr = (str) => {
     .toLowerCase();
 };
 // Filter result :
-const filterByName = (str, arrRecipes) =>
-  arrRecipes.filter((recipe) => normalizeStr(recipe.name).includes(str));
-const filterByDescription = (str, arrRecipes) =>
-  arrRecipes.filter((recipe) => normalizeStr(recipe.description).includes(str));
-const filterByIngredients = (str, arrRecipes) => {
-  return arrRecipes.filter((recipe) => {
-    const ingsList = recipe.ingredients.map((ing) =>
-      normalizeStr(ing.ingredient)
-    );
-    if (ingsList.some((ing) => ing.includes(str))) return recipe;
-  });
+// const filterByName = (str, arrRecipes) =>
+//   arrRecipes.filter((recipe) => normalizeStr(recipe.name).includes(str));
+
+const filterByName = (str, arrRecipes) => {
+  for (let recipe in arrRecipes) {
+    const normalizedStr = normalizeStr(str);
+    const normalizedNameRecipe = normalizeStr(recipe.name);
+    if(normalizedNameRecipe.includes(normalizedStr)) filteredRecipesByName.push(recipe);
+  }
 };
+// const filterByDescription = (str, arrRecipes) =>
+//   arrRecipes.filter((recipe) => normalizeStr(recipe.description).includes(str));
+const filterByDescription = (str, arrRecipes) => {
+  for (let recipe in arrRecipes) {
+    const normalizedStr = normalizeStr(str);
+    const normalizedDescription = normalizeStr(recipe.description);
+    if(normalizedDescription.includes(normalizedStr)) filteredRecipesByDes.push(recipe);
+  }
+};
+
+// const filterByIngredients = (str, arrRecipes) => {
+//   return arrRecipes.filter((recipe) => {
+//     const ingsList = recipe.ingredients.map((ing) =>
+//       normalizeStr(ing.ingredient)
+//     );
+//     if (ingsList.some((ing) => ing.includes(str))) return recipe;
+//   });
+// };
+
+const filterByIngredients = (str, arrRecipes) => {
+  for (let recipe in arrRecipes) {
+    const normalizedStr = normalizeStr(str);
+    let listIng = [];
+    for (let el in recipe.ingredients) {
+      
+      listIng.push(el.ingredient);
+      
+    };
+    console.log(listIng);
+    if(normalizedDescription.includes(normalizedStr)) filteredRecipesByDes.push(recipe);
+  }
+}
 const filterByAppliance = (str, arrRecipes) =>
   arrRecipes.filter((recipe) =>
     normalizeStr(recipe.appliance).includes(normalizeStr(str))
