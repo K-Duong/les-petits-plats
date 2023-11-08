@@ -79,10 +79,18 @@ main {
 
 .accordion-body {
   padding: 0;
+  height: auto;
+  /* activate when searching */
+  /* height: 250px; */
+  overflow: hidden;
 }
-/* .accordion-body input {
-  padding: 1rem 1.25rem;
-} */
+.list-items {
+  height: calc(100% - 55px);
+  overflow-y: scroll;
+}
+.list-items::-webkit-scrollbar {
+  display: none;
+}
 /* hover effect on tag name */
 button.dropdown-item:hover{
   font-weight: 700;
@@ -97,25 +105,11 @@ li.bg-warning:hover i {
 } 
 button.dropdown-item span {
   width: 100%;
-  /* text-align: end; */
 }
-/* display close btn of tag name*/
 /* element hidden */
 .hidden {
   display: none;
 }
-/* .list-items,
-.list-items-filter {
-  
- max-height: 200px;
-}
-.dropdown button,
-.dropdown form {
-  min-width: 100px;
-}
-.dropdown form {
-  margin-top: 0;
-}*/
 ul li {
   font-size: 14px;
 } 

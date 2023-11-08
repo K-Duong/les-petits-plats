@@ -18,6 +18,8 @@ const collapseMenuIng = document.querySelector("#collapseMenuIngredients");
 const collapseMenuApp = document.querySelector("#collapseMenuAppliances");
 const collapseMenuUst = document.querySelector("#collapseMenuUstensils");
 
+const accordionBodyDoms = document.querySelectorAll(".accordion-body");
+
 //variables
 let currentRecipes, currentListOfTagName, recipesAdvancedSearch;
 let selectedIngredients = [];
@@ -125,7 +127,7 @@ const removeClassList = (el, ...nameOfClass) => {
 };
 // function to display data to interface
 const styleSelectedOption = (option) => {
-  addClassList(option, "bg-warning", "fw-bolder-hover");
+  addClassList(option, "bg-warning");
 };
 const removeInnerHTML = (el) => {
   el.innerHTML = "";
@@ -146,12 +148,13 @@ const updateNumberOfFoundRecipes = (arrRecipes) => {
   }
 };
 const displayOptionsList = (originalListEl, ulContainer) => {
+  accordionBodyDoms.forEach(accordionBody => accordionBody.style.height = "250px");
   removeInnerHTML(ulContainer);
   ulContainer.insertAdjacentHTML("beforeend", optionTemplate(originalListEl));
   const optionsNodeList = ulContainer.querySelectorAll("li");
   optionsNodeList.forEach((option) => {
     option.addEventListener("click", (e) => {
-      selectElement(e);
+      selectElement(e);displayOul
     });
   });
 };
@@ -343,7 +346,7 @@ const removeElement = (e) => {
       recipesAdvancedSearch = recipesAdvancedSearch;
     }
   });
-  
+
   // recipesAdvancedSearch
   closeCollapseMenu();
   // update number of found recipe
@@ -437,6 +440,8 @@ const cbSearchRecipes = (val, elInput) => {
     selectedUstensils = [];
     listOfTagItems = [];
     const input = elInput.value;
+
+    closeCollapseMenu();
 
     // 0. normaliseStr
     const normalizeInput = normalizeStr(input);
@@ -564,33 +569,25 @@ const addEHandlerSearchBar = () => {
 const addEventHandlerSearchByIngredient = () => {
   inputIngredient.addEventListener("input", (e) => {
     const value = e.target.value;
-    // console.log(recipesAdvancedSearch);
-    const listContainer = inputIngredient.nextElementSibling;
-    // console.log(recipesAdvancedSearch);
-    debounceAdvancedSearchByIngredient(value, e.target, listContainer);
+    debounceAdvancedSearchByIngredient(value, e.target, ulContainerIngredients);
   });
 };
 const addEventHandlerSearchByAppliance = () => {
   inputAppliance.addEventListener("input", (e) => {
     const value = e.target.value;
-    // console.log(recipesAdvancedSearch);
-    const listContainer = inputAppliance.nextElementSibling;
-    // console.log(recipesAdvancedSearch);
-    debounceAdvancedSearchByAppliance(value, e.target, listContainer);
+    debounceAdvancedSearchByAppliance(value, e.target, ulContainerAppliances);
   });
 };
 const addEventHandlerSearchByUstensil = () => {
   inputUstensil.addEventListener("input", (e) => {
     const value = e.target.value;
-    // console.log(recipesAdvancedSearch);
-    const listContainer = inputUstensil.nextElementSibling;
-    // console.log(recipesAdvancedSearch);
-    debounceAdvancedSearchByUstensil(value, e.target, listContainer);
+    debounceAdvancedSearchByUstensil(value, e.target, ulContainerUstensils);
   });
 };
 
 ////////////////// APP //////////////////
 const init = () => {
+
   addEHandlerSearchBar();
 };
 
