@@ -43,6 +43,7 @@ const closeCollapseMenu = () => {
     removeClassList(menu, "show");
   });
 };
+// TODO: appliquer dans la liste des ingrédient ex: lait de coco - corriger les données si besoin
 const normalizeStr = (str) => {
   return str
     .trim()
@@ -148,7 +149,9 @@ const updateNumberOfFoundRecipes = (arrRecipes) => {
   }
 };
 const displayOptionsList = (originalListEl, ulContainer) => {
-  accordionBodyDoms.forEach(accordionBody => accordionBody.style.height = "250px");
+  accordionBodyDoms.forEach(
+    (accordionBody) => (accordionBody.style.height = "250px")
+  );
   removeInnerHTML(ulContainer);
   ulContainer.insertAdjacentHTML("beforeend", optionTemplate(originalListEl));
   const optionsNodeList = ulContainer.querySelectorAll("li");
@@ -184,7 +187,7 @@ const displayTagName = (listOfTag) => {
   });
 };
 // update list of options (ingredients, appliances, ustensils) to display
-const updateListOfOptions = (
+const displayNewListOptions = (
   ulContainer,
   selectedList,
   listOfOrignialOptions
@@ -232,43 +235,22 @@ const removeElement = (e) => {
     selectedAppliances,
     selectedUstensils,
   ];
-  // if remove an option from list 
+  // if remove an option from list
   if (ul) {
     if (ul === ulContainerIngredients) {
       // remove el from selected list
       const index1 = selectedIngredients.indexOf(target.dataset.name);
       selectedIngredients.splice(index1, 1);
-
-      // display on interface new list of options
-      updateListOfOptions(
-        ulContainerIngredients,
-        selectedIngredients,
-        listOfIngOptions
-      );
       inputIngredient.value = "";
     }
     if (ul === ulContainerAppliances) {
       const index1 = selectedAppliances.indexOf(target.dataset.name);
       selectedAppliances.splice(index1, 1);
-
-      // display on interface new list of options
-      updateListOfOptions(
-        ulContainerAppliances,
-        selectedAppliances,
-        listOfAppOptions
-      );
       inputAppliance.value = "";
     }
     if (ul === ulContainerUstensils) {
       const index1 = selectedUstensils.indexOf(target.dataset.name);
       selectedUstensils.splice(index1, 1);
-
-      // display on interface new list of options
-      updateListOfOptions(
-        ulContainerUstensils,
-        selectedUstensils,
-        listOfUstOptions
-      );
       inputAppliance.value = "";
     }
   }
@@ -278,33 +260,8 @@ const removeElement = (e) => {
     // find removed element and removed this option from selected lists
     allSelectedOptions.forEach((arrOptions) => {
       const index1 = arrOptions.indexOf(elName);
-      if (index1 === -1) {
-        return;
-      }
-      if (index1 !== -1) {
-        arrOptions.splice(index1, 1);
-        if (arrOptions === selectedIngredients) {
-          updateListOfOptions(
-            ulContainerIngredients,
-            selectedIngredients,
-            listOfIngOptions
-          );
-        }
-        if (arrOptions === selectedAppliances) {
-          updateListOfOptions(
-            ulContainerAppliances,
-            selectedAppliances,
-            listOfAppOptions
-          );
-        }
-        if (arrOptions === selectedUstensils) {
-          updateListOfOptions(
-            ulContainerUstensils,
-            selectedUstensils,
-            listOfUstOptions
-          );
-        }
-      }
+      if (index1 === -1) return;
+      if (index1 !== -1) arrOptions.splice(index1, 1);
     });
   }
 
@@ -347,12 +304,35 @@ const removeElement = (e) => {
     }
   });
 
+  updatefilteredListOfOptions(recipesAdvancedSearch);
+
+  displayNewListOptions(
+    ulContainerIngredients,
+    selectedIngredients,
+    listOfIngOptions
+  );
+  displayNewListOptions(
+    ulContainerAppliances,
+    selectedAppliances,
+    listOfAppOptions
+  );
+  displayNewListOptions(
+    ulContainerUstensils,
+    selectedUstensils,
+    listOfUstOptions
+  );
   // recipesAdvancedSearch
   closeCollapseMenu();
   // update number of found recipe
   updateNumberOfFoundRecipes(recipesAdvancedSearch);
   // update cards results
   displayCardRecipes(recipesAdvancedSearch);
+};
+
+const updatefilteredListOfOptions = (arrRecipes) => {
+  listOfIngOptions = filterAllIngOptions(arrRecipes);
+  listOfAppOptions = filterAllAppOptions(arrRecipes);
+  listOfUstOptions = filterAllUstOptions(arrRecipes);
 };
 
 const selectElement = (e) => {
@@ -364,46 +344,48 @@ const selectElement = (e) => {
   ////1.1 list of selected Options
   //TODO: check if elName has been already selected ?
   if (listOfIngOptions.includes(elName)) {
-    selectedIngredients.push(elName);
-    updateListOfOptions(
-      ulContainerIngredients,
-      selectedIngredients,
-      listOfIngOptions
-    );
     recipesAdvancedSearch = filterByIngredients(
       normalizeStr(elName),
       recipesAdvancedSearch
     );
-    inputIngredient.value= "";
+    selectedIngredients.push(elName);
+    inputIngredient.value = "";
   }
   if (listOfAppOptions.includes(elName)) {
-    selectedAppliances.push(elName);
-    updateListOfOptions(
-      ulContainerAppliances,
-      selectedAppliances,
-      listOfAppOptions
-    );
     recipesAdvancedSearch = filterByAppliance(
       normalizeStr(elName),
       recipesAdvancedSearch
     );
-    inputAppliance.value= "";
+    selectedAppliances.push(elName);
 
+    inputAppliance.value = "";
   }
   if (listOfUstOptions.includes(elName)) {
-    selectedUstensils.push(elName);
-    updateListOfOptions(
-      ulContainerUstensils,
-      selectedUstensils,
-      listOfUstOptions
-    );
     recipesAdvancedSearch = filterByUstensil(
       normalizeStr(elName),
       recipesAdvancedSearch
     );
-    inputUstensil.value= "";
+    selectedUstensils.push(elName);
 
+    inputUstensil.value = "";
   }
+  updatefilteredListOfOptions(recipesAdvancedSearch);
+  displayNewListOptions(
+    ulContainerIngredients,
+    selectedIngredients,
+    listOfIngOptions
+  );
+  displayNewListOptions(
+    ulContainerAppliances,
+    selectedAppliances,
+    listOfAppOptions
+  );
+  displayNewListOptions(
+    ulContainerUstensils,
+    selectedUstensils,
+    listOfUstOptions
+  );
+
   ////1.2 list of tag name
   listOfTagItems = selectedIngredients
     .concat(selectedAppliances)
@@ -416,15 +398,14 @@ const selectElement = (e) => {
   updateNumberOfFoundRecipes(recipesAdvancedSearch);
   ////2.3 display found recipe
   displayCardRecipes(recipesAdvancedSearch);
-  //3. close all collapse menu and 
+  //3. close all collapse menu and
   closeCollapseMenu();
 };
-
-
 
 // filter by Searchbar
 const cbGeneralSearch = (val, elInput) => {
   if (val === elInput.value) {
+    // console.log(currentRecipes);
     // init data from DOM and filter lists
     const domToRemove = [
       ulContainerIngredients,
@@ -587,8 +568,10 @@ const addEventHandlerSearchByUstensil = () => {
 
 ////////////////// APP //////////////////
 const init = () => {
+  currentRecipes = recipes;
 
   addEHandlerSearchBar();
+  displayCardRecipes(currentRecipes);
 };
 
 init();
