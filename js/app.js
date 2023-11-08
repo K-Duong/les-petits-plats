@@ -11,6 +11,9 @@ const numOfFoundRecipes = document.querySelector(".number-result");
 const cardsRecipesContainer = document.querySelector(".result-container");
 const tagContainer = document.querySelector(".tag-container");
 
+const btnsCollapse = document.querySelectorAll("button.accordion-button");
+const collapseMenus = document.querySelectorAll("div.accordion-collapse");
+
 const collapseMenuIng = document.querySelector("#collapseMenuIngredients");
 const collapseMenuApp = document.querySelector("#collapseMenuAppliances");
 const collapseMenuUst = document.querySelector("#collapseMenuUstensils");
@@ -30,6 +33,15 @@ let listOfIngOptions, listOfAppOptions, listOfUstOptions;
 // filter by Search Bar
 
 //general functions
+const closeCollapseMenu = () => {
+  btnsCollapse.forEach((btn) => {
+    btn.setAttribute("aria-expanded", "false");
+    addClassList(btn, "collapsed");
+  });
+  collapseMenus.forEach((menu) => {
+    removeClassList(menu, "show");
+  });
+};
 const normalizeStr = (str) => {
   return str
     .trim()
@@ -113,6 +125,10 @@ const removeClassList = (el, ...nameOfClass) => {
   el.classList.remove(...nameOfClass);
 };
 // function to display data to interface
+const styleSelectedOption = (option) => {
+  // const icon = btn.querySelector("i");
+  addClassList(option, "bg-warning", "fw-bolder-hover");
+};
 const removeInnerHTML = (el) => {
   el.innerHTML = "";
 };
@@ -131,51 +147,195 @@ const updateNumberOfFoundRecipes = (arrRecipes) => {
     numOfFoundRecipes.textContent = "1500 recettes";
   }
 };
-const displayOptionsList = (selectedList, ulContainer) => {
+const displayOptionsList = (originalListEl, ulContainer) => {
   removeInnerHTML(ulContainer);
-  ulContainer.insertAdjacentHTML("beforeend", optionTemplate(selectedList));
-  const selectedOptions = ulContainer.querySelectorAll("li");
-  // console.log(selectedOption);
-  // debounce input advanced search
-  selectedOptions.forEach((option) => {
+  ulContainer.insertAdjacentHTML("beforeend", optionTemplate(originalListEl));
+  const optionsNodeList = ulContainer.querySelectorAll("li");
+  optionsNodeList.forEach((option) => {
     option.addEventListener("click", (e) => {
       selectElement(e);
     });
   });
-  //event handler select an option
-
-  //filter by selected list
-
-  // update style of
 };
 const updateListOfOptions = (
-  elName,
   ulContainer,
   selectedList,
   listOfOrignialOptions
 ) => {
   removeInnerHTML(ulContainer);
-  ulContainer.insertAdjacentHTML("beforeend", optionTemplate(selectedList));
-  const selectedLi = ulContainer.querySelectorAll("li");
-  selectedLi.forEach((li) => styleSelectedOption(li));
-  ulContainer.insertAdjacentHTML(
-    "beforeend",
-    optionTemplate(listOfOrignialOptions)
-  );
-  const originalLi = ulContainer.querySelectorAll("li:not(.bg-warning)");
-  originalLi.forEach((li) => {
-    if (normalizeStr(li.dataset.name) === normalizeStr(elName))
-      addClassList(li, "hidden");
-    li.addEventListener("click", (e) => {
-      selectElement(e);
+  // console.log(selectedList.length);
+
+  if (selectedList.length > 0) {
+    ulContainer.insertAdjacentHTML("beforeend", optionTemplate(selectedList));
+    const selectedLi = ulContainer.querySelectorAll("li");
+    selectedLi.forEach((li) => {
+      styleSelectedOption(li);
+
+      // event handler to remove
+      const btnClose = li.querySelector(".button-close");
+      btnClose.addEventListener("click", (e) => {
+        removeElement(e);
+      });
     });
-  });
+    ulContainer.insertAdjacentHTML(
+      "beforeend",
+      optionTemplate(listOfOrignialOptions)
+    );
+    const originalLi = ulContainer.querySelectorAll("li:not(.bg-warning)");
+    originalLi.forEach((li) => {
+      selectedLi.forEach((li2) => {
+        if (normalizeStr(li.dataset.name) === normalizeStr(li2.dataset.name))
+          addClassList(li, "hidden");
+        li.addEventListener("click", (e) => {
+          selectElement(e);
+        });
+      });
+    });
+  }
+  if (selectedList.length === 0) {
+    displayOptionsList(listOfOrignialOptions, ulContainer);
+  }
 };
 
-const selectElement = (event) => {
+const removeElement = (e) => {
+  const target = e.target.closest("[data-name]");
+  const elName = target.dataset.name;
+  const ul = e.target.closest("ul");
+  const allSelectedOptions = [
+    selectedIngredients,
+    selectedAppliances,
+    selectedUstensils,
+  ];
+
+  if (ul) {
+    if (ul.classList.contains("ingredients-options")) {
+      const index1 = selectedIngredients.indexOf(target.dataset.name);
+      selectedIngredients.splice(index1, 1);
+      console.log("new list of selected ing:", selectedIngredients);
+
+      // display on interface new list of options
+      updateListOfOptions(
+        ulContainerIngredients,
+        selectedIngredients,
+        listOfIngOptions
+      );
+      inputIngredient.value = "";
+    }
+    if (ul.classList.contains("appliances-options")) {
+      const index1 = selectedAppliances.indexOf(target.dataset.name);
+      selectedAppliances.splice(index1, 1);
+      console.log("new list of selected ing:", selectedAppliances);
+
+      // display on interface new list of options
+      updateListOfOptions(
+        ulContainerAppliances,
+        selectedAppliances,
+        listOfAppOptions
+      );
+      inputAppliance.value = "";
+    }
+    if (ul.classList.contains("ustensils-options")) {
+      const index1 = selectedUstensils.indexOf(target.dataset.name);
+      selectedUstensils.splice(index1, 1);
+      console.log("new list of selected ing:", selectedUstensils);
+
+      // display on interface new list of options
+      updateListOfOptions(
+        ulContainerUstensils,
+        selectedUstensils,
+        listOfUstOptions
+      );
+      inputAppliance.value = "";
+    }
+  }
+  if (!ul) {
+    // update new list of options
+    // find removed element and removed this option from select lists
+    allSelectedOptions.forEach((arrOptions) => {
+      const index1 = arrOptions.indexOf(elName);
+      if (index1 === -1) {
+        return;
+      }
+      if (index1 !== -1) {
+        arrOptions.splice(index1, 1);
+        if (arrOptions === selectedIngredients) {
+          updateListOfOptions(
+            ulContainerIngredients,
+            selectedIngredients,
+            listOfIngOptions
+          );
+        }
+        if (arrOptions === selectedAppliances) {
+          updateListOfOptions(
+            ulContainerAppliances,
+            selectedAppliances,
+            listOfAppOptions
+          );
+        }
+        if (arrOptions === selectedUstensils) {
+          updateListOfOptions(
+            ulContainerUstensils,
+            selectedUstensils,
+            listOfUstOptions
+          );
+        }
+        console.log(arrOptions);
+      }
+    });
+  }
+
+  // update listOfTagItems and display new result to interface
+  const index2 = listOfTagItems.findIndex((el) => el === target.dataset.name);
+  listOfTagItems.splice(index2, 1);
+  displayTagName(listOfTagItems);
+
+  // update recipesAdvancedSearch
+  recipesAdvancedSearch = [...currentRecipes];
+  console.log(allSelectedOptions);
+  allSelectedOptions.forEach((selectedList) => {
+    if (selectedList.length > 0) {
+      if (selectedList === selectedIngredients) {
+        selectedList.forEach((el) => {
+          recipesAdvancedSearch = filterByIngredients(
+            normalizeStr(el),
+            recipesAdvancedSearch
+          );
+        });
+      }
+      if (selectedList === selectedAppliances) {
+        selectedList.forEach((el) => {
+          recipesAdvancedSearch = filterByAppliance(
+            normalizeStr(el),
+            recipesAdvancedSearch
+          );
+        });
+      }
+      if (selectedList === selectedUstensils) {
+        selectedList.forEach((el) => {
+          recipesAdvancedSearch = filterByUstensil(
+            normalizeStr(el),
+            recipesAdvancedSearch
+          );
+        });
+      }
+    }
+    if (selectedList.length === 0) {
+      recipesAdvancedSearch = recipesAdvancedSearch;
+    }
+  });
+  // recipesAdvancedSearch
+      // console.log(recipesAdvancedSearch);
+  closeCollapseMenu();
+  // update number of found recipe
+  updateNumberOfFoundRecipes(recipesAdvancedSearch);
+  // update cards results
+  displayCardRecipes(recipesAdvancedSearch);
+};
+
+const selectElement = (e) => {
   //  target = li or button
-  const target = event.target.closest("[data-name]");
-  console.log(target.dataset.name);
+  const target = e.target.closest("[data-name]");
+  // console.log(target.dataset.name);
   const elName = target.dataset.name;
 
   // update data
@@ -184,7 +344,6 @@ const selectElement = (event) => {
   if (listOfIngOptions.includes(elName)) {
     selectedIngredients.push(elName);
     updateListOfOptions(
-      elName,
       ulContainerIngredients,
       selectedIngredients,
       listOfIngOptions
@@ -199,7 +358,6 @@ const selectElement = (event) => {
   if (listOfAppOptions.includes(elName)) {
     selectedAppliances.push(elName);
     updateListOfOptions(
-      elName,
       ulContainerAppliances,
       selectedAppliances,
       listOfAppOptions
@@ -212,7 +370,6 @@ const selectElement = (event) => {
   if (listOfUstOptions.includes(elName)) {
     selectedUstensils.push(elName);
     updateListOfOptions(
-      elName,
       ulContainerUstensils,
       selectedUstensils,
       listOfUstOptions
@@ -222,12 +379,13 @@ const selectElement = (event) => {
       recipesAdvancedSearch
     );
   }
-
+  // close all collapse menu
+  closeCollapseMenu();
   // list of tag name
   listOfTagItems = selectedIngredients
     .concat(selectedAppliances)
     .concat(selectedUstensils);
-  console.log(recipesAdvancedSearch);
+  // console.log(recipesAdvancedSearch);
   // update interface
   //// display tag card
   displayTagName(listOfTagItems);
@@ -263,24 +421,13 @@ const displayTagName = (
   });
   // Event handler to remove tag name
   const tagNodeList = tagContainer.querySelectorAll("button");
-  console.log(tagNodeList);
+  // console.log(tagNodeList);
   tagNodeList.forEach((tag) => {
     //   //TODO: à revoir pour tag name
     const iconClose = tag.querySelector(".button-close");
-    iconClose.addEventListener("click", () => {
-      console.log("click on tag");
-      addEHandlerToBtnCloseOfOption(
-        ulContainer,
-        liEl,
-        listOfOriginalOptions,
-        collapseMenu,
-        filterListOptions
-      );
-
-      //     addEHandlerToBtnCloseOfOption(tag,
-      //       liOriginal,
-      //       collapseMenu,
-      //       filterListToDisplay)
+    iconClose.addEventListener("click", (e) => {
+      // console.log("click on tag");
+      removeElement(e);
     });
   });
 };
@@ -358,228 +505,6 @@ const cbSearchRecipes = (val, elInput) => {
   }
 };
 
-// event handler
-const addEHandlerToBtnCloseOfOption = (
-  ulContainer,
-  liEl,
-  listOfOriginalOptions,
-  collapseMenu,
-  filterListOptions
-) => {
-  console.log("list tag result, ", listTagResult);
-  // update list of tag name and display tag name
-  const index1 = listTagResult.findIndex((el) => el === liEl.dataset.name);
-  listTagResult.splice(index1, 1);
-  console.log("list tag result after removing el:", listTagResult);
-  const index2 = filterListOptions.findIndex((el) => el === liEl.dataset.name);
-  filterListOptions.splice(index2, 1);
-  console.log("list of filter element after removing el:", filterListOptions);
-
-  // hidden li filter and display li orginial
-  // addClassList(liEl, "hidden");
-  // liOriginal.forEach((li2) => {
-  //   if (normalizeStr(liEl.dataset.name) === normalizeStr(li2.dataset.name))
-  //     removeClassList(li2, "hidden");
-  // });
-  listTagResult;
-  // TODO: revoir avec bootstrap JS
-  removeClassList(collapseMenu, "show");
-
-  updateOptionsList(
-    ulContainer,
-    filterListOptions,
-    listOfOriginalOptions,
-    collapseMenu
-  );
-
-  // update card tag name
-  displayTagName(
-    listTagResult,
-    ulContainer,
-    liEl,
-    listOfOriginalOptions,
-    collapseMenu,
-    filterListOptions
-  );
-  // const a = filterListIng.map(ing => filterByIngredients(normalizeStr(ing), currentRecipes));
-  // const b = filterListAppliance.map(appliance  => filterByAppliance(appliance, currentRecipes));
-  // const c = filterListUstensils.map(ustensilList => filterByUstensil(ustensilList, currentRecipes) );
-  // console.log(filterListIng, a);
-  // console.log(filterListAppliance,b);
-  // console.log(filterListUstensils,c);
-
-  if (listTagResult.length > 1) {
-    const filteredRecipesFromTagResult = listTagResult.map((tag) => {
-      return currentRecipes.filter((recipe) => {
-        const condition =
-          findByIng(normalizeStr(tag), recipe) ||
-          findByAppliance(normalizeStr(tag), recipe) ||
-          findByUstensil(normalizeStr(tag), recipe);
-        if (condition) return recipe;
-      });
-    });
-
-    const recipeConcat = filteredRecipesFromTagResult.reduce((acc, curr) =>
-      acc.concat(curr)
-    );
-    console.log("duplicate", toFindDuplicates(recipeConcat));
-    recipesAdvancedSearch = toFindDuplicates(recipeConcat);
-  } else if (listTagResult.length === 1) {
-    console.log("list of tag", listTagResult);
-    [recipesAdvancedSearch] = [
-      ...listTagResult.map((tag) => {
-        return currentRecipes.filter((recipe) => {
-          const condition =
-            findByIng(normalizeStr(tag), recipe) ||
-            findByAppliance(normalizeStr(tag), recipe) ||
-            findByUstensil(normalizeStr(tag), recipe);
-          if (condition) return recipe;
-        });
-      }),
-    ];
-  } else {
-    recipesAdvancedSearch = [];
-  }
-
-  console.log("recipesAdvancedSearch", recipesAdvancedSearch);
-
-  // if recipesAdvancedSearch.length > 0
-  if (recipesAdvancedSearch.length > 0 || listTagResult.length > 0) {
-    //  update number of result
-    updateNumberOfFoundRecipes(recipesAdvancedSearch);
-    // update cards recipes
-    displayCardRecipes(recipesAdvancedSearch);
-  } else {
-    recipesAdvancedSearch = [...currentRecipes];
-    updateNumberOfFoundRecipes(recipesAdvancedSearch);
-    displayCardRecipes(recipesAdvancedSearch);
-  }
-};
-
-// FIXME:render list of options with selected options and original options
-const updateOptionsList = (
-  ulContainer,
-  filterListToDisplay,
-  listOfOriginalOptions,
-  collapseMenu
-) => {
-  removeInnerHTML(ulContainer);
-  ulContainer.insertAdjacentHTML(
-    "beforeend",
-    optionTemplate(filterListToDisplay)
-  );
-  ulContainer.querySelectorAll("li").forEach((li) => styleSelectedOption(li));
-  ulContainer.insertAdjacentHTML(
-    "beforeend",
-    optionTemplate(listOfOriginalOptions)
-  );
-
-  const liFilter = ulContainer.querySelectorAll("li.bg-warning");
-  const liOriginal = ulContainer.querySelectorAll("li:not(.bg-warning)");
-  //hide selected option from original list
-  liFilter.forEach((li1) =>
-    liOriginal.forEach((li2) => {
-      if (normalizeStr(li1.dataset.name) === normalizeStr(li2.dataset.name))
-        addClassList(li2, "hidden");
-    })
-  );
-  liFilter.forEach((li) => {
-    const iconClose = li.querySelector(".button-close");
-    iconClose.addEventListener("click", () => {
-      addEHandlerToBtnCloseOfOption(
-        ulContainer,
-        li,
-        listOfOriginalOptions,
-        collapseMenu,
-        filterListToDisplay
-      );
-    });
-  });
-};
-// const addEHandlerToSelectedOption = (
-//   e,
-//   ulContainer,
-//   filterListToDisplay,
-//   listOfOriginalOptions,
-//   collapseMenu
-// ) => {
-//   // console.log("filter list", filterListToDisplay);
-//   const el = e.target.textContent;
-//   if (filterListToDisplay.includes(el)) return;
-
-//   // update new list option = selected options + original options
-//   filterListToDisplay.push(el);
-//   updateListOfTagName();
-//   // removeInnerHTML(ulContainer);
-//   // ulContainer.insertAdjacentHTML("beforeend", optionTemplate(filterListToDisplay));
-//   // ulContainer.querySelectorAll("li").forEach((li) => styleSelectedOption(li));
-//   // ulContainer.insertAdjacentHTML("beforeend", optionTemplate(listOfOriginalOptions));
-
-//   // console.log("ul container:", ulContainer);
-//   // console.log("filter list to display:", filterListToDisplay);
-
-//   // const liFilter = ulContainer.querySelectorAll("li.bg-warning");
-//   // const liOriginal = ulContainer.querySelectorAll("li:not(.bg-warning)");
-//   //   //hide selected option from original list
-//   // liFilter.forEach((li1) =>
-//   //   liOriginal.forEach((li2) => {
-//   //     if (normalizeStr(li1.dataset.name) === normalizeStr(li2.dataset.name))
-//   //       addClassList(li2, "hidden");
-//   //   })
-//   // );
-//   // console.log("lenght: ", recipesAdvancedSearch.length);
-//   // if (recipesAdvancedSearch.length > 0) {
-//   recipesAdvancedSearch = recipesAdvancedSearch.filter((recipe) => {
-//     const condition =
-//       findByIng(normalizeStr(el), recipe) ||
-//       findByAppliance(normalizeStr(el), recipe) ||
-//       findByUstensil(normalizeStr(el), recipe);
-//     if (condition) return recipe;
-//   });
-//   // console.log(filterListIng);
-//   // TODO: à revoir avec JS bootstrap vs button collapse
-//   removeClassList(collapseMenuIng, "show");
-//   removeClassList(collapseMenuApp, "show");
-//   removeClassList(collapseMenuUst, "show");
-
-//   //add card tag name
-//   displayTagName(
-//     listTagResult,
-//     ulContainer,
-//     e.target,
-//     listOfOriginalOptions,
-//     collapseMenu,
-//     filterListToDisplay
-//   );
-
-//   // update number of results
-//   updateNumberOfFoundRecipes(recipesAdvancedSearch);
-
-//   //update cards recipes
-//   displayCardRecipes(recipesAdvancedSearch);
-
-//   // clear input
-//   inputIngredient.value = inputAppliance.value = inputUstensil.value = "";
-
-//   // event hander to remove selected option
-//   // liFilter.forEach((li) => {
-//   //   const iconClose = li.querySelector(".button-close");
-//   //   iconClose.addEventListener("click", () => {
-//   //     addEHandlerToBtnCloseOfOption(
-//   //       li,
-//   //       liOriginal,
-//   //       collapseMenu,
-//   //       filterListToDisplay
-//   //     );
-//   //   });
-//   // });
-//   updateOptionsList(
-//     ulContainer,
-//     filterListToDisplay,
-//     listOfOriginalOptions,
-//     collapseMenu
-//   );
-// };
 const addEventHandlerSearchByIngredient = () => {
   inputIngredient.addEventListener("input", (e) => {
     const value = e.target.value;
@@ -608,12 +533,7 @@ const addEventHandlerSearchByUstensil = () => {
   });
 };
 
-// TODO: à remettre en fonction générale
-const styleSelectedOption = (btn) => {
-  // const icon = btn.querySelector("i");
-  addClassList(btn, "bg-warning", "fw-bolder-hover");
-  // removeClassList(icon, "hidden");
-};
+
 // advanced Search
 const cbAdvancedSearchByUstensil = (val, elInput, ulContainer) => {
   if (val === elInput.value) {
@@ -636,8 +556,7 @@ const cbAdvancedSearchByUstensil = (val, elInput, ulContainer) => {
     // add event handler for each option
     optionsNodeList.forEach((option) => {
       option.addEventListener("click", (e) => {
-        selectElement(e)
-       
+        selectElement(e);
       });
     });
   }
@@ -690,7 +609,7 @@ const cbAdvancedSearchByIngredients = (val, elInput, ulContainer) => {
     // add event handler for each option
     optionsNodeList.forEach((option) => {
       option.addEventListener("click", (e) => {
-        selectElement(e)
+        selectElement(e);
       });
     });
   }
