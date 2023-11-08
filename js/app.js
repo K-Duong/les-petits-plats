@@ -154,7 +154,7 @@ const displayOptionsList = (originalListEl, ulContainer) => {
   const optionsNodeList = ulContainer.querySelectorAll("li");
   optionsNodeList.forEach((option) => {
     option.addEventListener("click", (e) => {
-      selectElement(e);displayOul
+      selectElement(e);
     });
   });
 };
