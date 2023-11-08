@@ -96,7 +96,7 @@ main {
 }
 .input-group i.fa-magnifying-glass {
   color:var(--light-gray);
-  
+  border-left: none;
 }
 li {
   padding: 0.25rem 1.25rem;

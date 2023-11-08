@@ -423,7 +423,7 @@ const selectElement = (e) => {
 
 
 // filter by Searchbar
-const cbSearchRecipes = (val, elInput) => {
+const cbGeneralSearch = (val, elInput) => {
   if (val === elInput.value) {
     // init data from DOM and filter lists
     const domToRemove = [
@@ -492,7 +492,7 @@ const cbSearchRecipes = (val, elInput) => {
 };
 
 // advanced Search
-const advancedSearch = (val, elInput, ulContainer) => {
+const cbAdvancedSearch = (val, elInput, ulContainer) => {
   if (val === elInput.value) {
     const input = elInput.value;
     let suggestionList;
@@ -535,22 +535,22 @@ const advancedSearch = (val, elInput, ulContainer) => {
 //Debounce
 const debounce = (val, elInput) => {
   setTimeout(() => {
-    cbSearchRecipes(val, elInput);
+    cbGeneralSearch(val, elInput);
   }, 300);
 };
 const debounceAdvancedSearchByIngredient = (val, elInput, ulContainer) => {
   setTimeout(() => {
-    advancedSearch(val, elInput, ulContainer);
+    cbAdvancedSearch(val, elInput, ulContainer);
   }, 300);
 };
 const debounceAdvancedSearchByAppliance = (val, elInput, ulContainer) => {
   setTimeout(() => {
-    advancedSearch(val, elInput, ulContainer);
+    cbAdvancedSearch(val, elInput, ulContainer);
   }, 300);
 };
 const debounceAdvancedSearchByUstensil = (val, elInput, ulContainer) => {
   setTimeout(() => {
-    advancedSearch(val, elInput, ulContainer);
+    cbAdvancedSearch(val, elInput, ulContainer);
   }, 300);
 };
 //add event handler

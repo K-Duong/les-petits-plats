@@ -37,8 +37,6 @@ const optionTemplate = (listOfOptions) => {
   </li>`}).join('')}                      
   `;
 }
-
-
 const tagName = (el) => {
   return `
   <button data-name="${el}" type="button" class="card-tag btn btn-warning p-3 me-3">
