@@ -23,8 +23,8 @@ const accordionBodyDoms = document.querySelectorAll(".accordion-body");
 //variables
 let currentRecipes, currentListOfTagName, recipesAdvancedSearch;
 
-let filteredRecipesByApp = [];
-let filteredRecipesByUst = [];
+// let filteredRecipesByApp = [];
+// let filteredRecipesByUst = [];
 
 let selectedIngredients = [];
 let selectedAppliances = [];
@@ -57,7 +57,32 @@ const normalizeStr = (str) => {
     .toLowerCase();
 };
 
-// currentRecipes = recipes;
+const checkIsRepeated = (arrData) => {
+  let isRepeted = false;
+
+  for (let i = 0; i < arrData.length; i++) {
+    let newArr = [];
+
+    for (let j = i + 1; j < arrData.length; j++) {
+      if (normalizeStr(arrData[i]) === normalizeStr(arrData[j]))
+        isRepeted = true;
+      if (normalizeStr(arrData[i]) !== normalizeStr(arrData[j]))
+        isRepeted = false;
+      newArr.push(isRepeted);
+    }
+    // console.log("new arr:", newArr);
+    for (let key in newArr) {
+      if (newArr[key] === true) {
+        let newIndex = Number(key) + i + 1;
+        arrData.splice(newIndex, 1);
+      }
+    }
+  }
+  // console.log("array with unique value", arrData);
+  return arrData;
+};
+
+// filter recipes result
 const filterByName = (str, arrRecipes) => {
   let filteredRecipesByName = [];
   for (let recipe of arrRecipes) {
@@ -86,7 +111,6 @@ const filterByIngredients = (str, arrRecipes) => {
   const normalizedStr = normalizeStr(str);
 
   for (let recipe of arrRecipes) {
-    // let listIng = [];
 
     for (let el of recipe.ingredients) {
       // if ingredient include string
@@ -99,33 +123,34 @@ const filterByIngredients = (str, arrRecipes) => {
   console.log(filteredRecipesByIng);
   return filteredRecipesByIng;
 };
-// FIXME: remettre dans l'endroit des fonctions générales
 
-const checkIsRepeated = (arrData) => {
-  let isRepeted = false;
-
-  for (let i = 0; i < arrData.length; i++) {
-    let newArr = [];
-
-    for (let j = i + 1; j < arrData.length; j++) {
-      if (normalizeStr(arrData[i]) === normalizeStr(arrData[j]))
-        isRepeted = true;
-      if (normalizeStr(arrData[i]) !== normalizeStr(arrData[j]))
-        isRepeted = false;
-      newArr.push(isRepeted);
+const filterByAppliance = (str, arrRecipes) =>{
+  let filteredRecipesByApp = [];
+  for (let recipe of arrRecipes) {
+    if (normalizeStr(recipe.appliance).includes(normalizeStr(str))) {
+      filteredRecipesByApp.push(recipe);
     }
-    // console.log("new arr:", newArr);
-    for (let key in newArr) {
-      if (newArr[key] === true) {
-        let newIndex = Number(key) + i + 1;
-        arrData.splice(newIndex, 1);
+  };
+  console.log(filteredRecipesByApp);
+  return filteredRecipesByApp
+}
+const filterByUstensil = (str, arrRecipes) => {
+  let filteredRecipesByUst = [];
+  const normalizedStr = normalizeStr(str);
+  for (let recipe of arrRecipes) {
+    for (let ustensil of recipe.ustensils) {
+      if (normalizeStr(ustensil).includes(normalizedStr)) {
+        filteredRecipesByUst.push(recipe);
+        break;
+        }
       }
     }
-  }
-  // console.log("array with unique value", arrData);
-  return arrData;
+  
+  console.log("filtered recipe from ustensils list", filteredRecipesByUst);
+  return filteredRecipesByUst;
 };
 
+// filter options list from recipe result
 const filterAllIngOptions = (arrRecipes) => {
   listOfIngOptions = [];
   for (let recipe of arrRecipes) {
@@ -160,19 +185,7 @@ const filterAllUstOptions = (arrRecipes) => {
   return listOfUstOptions;
 };
 
-const filterByAppliance = (str, arrRecipes) =>
-  arrRecipes.filter((recipe) =>
-    normalizeStr(recipe.appliance).includes(normalizeStr(str))
-  );
-const filterByUstensil = (str, arrRecipes) => {
-  return arrRecipes.filter((recipe) => {
-    const ustensilsList = recipe.ustensils.map((el) => normalizeStr(el));
-    const ustensilFilterCondition = ustensilsList.some((el) =>
-      el.includes(str)
-    );
-    if (ustensilFilterCondition) return recipe;
-  });
-};
+
 // // TODO: recreate function
 // // const findByIng = (str, data) => {
 // //   const ingredientsList = data.ingredients.map((ing) =>
@@ -267,29 +280,29 @@ const displayNewListOptions = (
   if (selectedList.length > 0) {
     ulContainer.insertAdjacentHTML("beforeend", optionTemplate(selectedList));
     const selectedLi = ulContainer.querySelectorAll("li");
-    selectedLi.forEach((li) => {
+    for (let li of selectedLi) {
       styleSelectedOption(li);
 
-      // event handler to remove
+    //   // event handler to remove
       const btnClose = li.querySelector(".button-close");
       btnClose.addEventListener("click", (e) => {
         removeElement(e);
       });
-    });
+    }
     ulContainer.insertAdjacentHTML(
       "beforeend",
       optionTemplate(listOfOrignialOptions)
     );
     const originalLi = ulContainer.querySelectorAll("li:not(.bg-warning)");
-    originalLi.forEach((li) => {
-      selectedLi.forEach((li2) => {
+    for (let li of originalLi) {
+      for (let li2 of selectedLi) {
         if (normalizeStr(li.dataset.name) === normalizeStr(li2.dataset.name))
           addClassList(li, "hidden");
         li.addEventListener("click", (e) => {
           selectElement(e);
         });
-      });
-    });
+      }
+    }
   };
   if (selectedList.length === 0) {
     displayOptionsList(listOfOrignialOptions, ulContainer);
@@ -366,6 +379,14 @@ const removeElement = (e) => {
   if (!ul) {
     // update new list of options
     // find removed element and removed this option from selected lists
+    // for (let optionList of allSelectedOptions) {
+    //   console.log("option list", optionList);
+    //   const index1 = optionList.indexOf(elName);
+    //   console.log("index1", index1);
+     
+    //   if (index1 === -1) return;
+    //   if (index1 !== -1) optionList.splice(index1, 1);
+    // }
     allSelectedOptions.forEach((arrOptions) => {
       const index1 = arrOptions.indexOf(elName);
      
