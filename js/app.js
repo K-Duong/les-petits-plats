@@ -52,11 +52,13 @@ const normalizeStr = (str) => {
     .toLowerCase();
 };
 
-const checkIsDuplicated = (arrData) => {
-  // let temp = arrData.map(data => normalizeStr(data));
+// const checkIsDuplicated = (arrData) => {
+//   let temp = arrData.map(data => normalizeStr(data));
   
-  arrData.filter((item, index) => arrData.indexOf(item) === index);
-}
+//   temp.findIndex((item, index) => (temp.indexOf(item) !== index));
+// }
+// const arr = ['Duong', 'huy', 'hello', 'duong','Huy', 'lucie'];
+// console.log(checkIsDuplicated(arr));
 // Filter result :
 const filterByName = (str, arrRecipes) =>
   arrRecipes.filter((recipe) => normalizeStr(recipe.name).includes(str));
@@ -105,20 +107,31 @@ const filterByUstensil = (str, arrRecipes) => {
 //   if (ustensilFilterCondition) return ustensilFilterCondition;
 // };
 //filter list of options
-const filterAllIngOptions = (currentRecipes) => {
-  let tempArr = [
-  ...new Set(
-    currentRecipes
-      .map((recipe) =>
-        recipe.ingredients.map((ingredients) => ingredients.ingredient)
-      )
-      .reduce((acc, curr) => acc.concat(curr))
-      .sort()
-  ),
-];
- checkIsDuplicated(tempArr);
- console.log("temp,", tempArr);
-}
+// const filterAllIngOptions = (currentRecipes) => {
+//   let tempArr = [
+//   ...new Set(
+//     currentRecipes
+//       .map((recipe) =>
+//         recipe.ingredients.map((ingredients) => ingredients.ingredient)
+//       )
+//       .reduce((acc, curr) => acc.concat(curr))
+//       .sort()
+//   ),
+// ];
+//  checkIsDuplicated(tempArr);
+//  console.log("temp,", tempArr);
+// }
+
+const filterAllIngOptions = (currentRecipes) => [
+    ...new Set(
+      currentRecipes
+        .map((recipe) =>
+          recipe.ingredients.map((ingredients) => ingredients.ingredient)
+        )
+        .reduce((acc, curr) => acc.concat(curr))
+        .sort()
+    ),
+  ];
 const filterAllAppOptions = (currentRecipes) => [
   ...new Set(currentRecipes.map((recipe) => recipe.appliance)),
 ];
