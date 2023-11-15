@@ -51,12 +51,19 @@ const normalizeStr = (str) => {
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase();
 };
+
+const checkIsDuplicated = (arrData) => {
+  // let temp = arrData.map(data => normalizeStr(data));
+  
+  arrData.filter((item, index) => arrData.indexOf(item) === index);
+}
 // Filter result :
 const filterByName = (str, arrRecipes) =>
   arrRecipes.filter((recipe) => normalizeStr(recipe.name).includes(str));
 const filterByDescription = (str, arrRecipes) =>
   arrRecipes.filter((recipe) => normalizeStr(recipe.description).includes(str));
 const filterByIngredients = (str, arrRecipes) => {
+  
   return arrRecipes.filter((recipe) => {
     const ingsList = recipe.ingredients.map((ing) =>
       normalizeStr(ing.ingredient)
@@ -98,7 +105,8 @@ const filterByUstensil = (str, arrRecipes) => {
 //   if (ustensilFilterCondition) return ustensilFilterCondition;
 // };
 //filter list of options
-const filterAllIngOptions = (currentRecipes) => [
+const filterAllIngOptions = (currentRecipes) => {
+  let tempArr = [
   ...new Set(
     currentRecipes
       .map((recipe) =>
@@ -108,6 +116,9 @@ const filterAllIngOptions = (currentRecipes) => [
       .sort()
   ),
 ];
+ checkIsDuplicated(tempArr);
+ console.log("temp,", tempArr);
+}
 const filterAllAppOptions = (currentRecipes) => [
   ...new Set(currentRecipes.map((recipe) => recipe.appliance)),
 ];
