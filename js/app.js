@@ -57,58 +57,58 @@ const normalizeStr = (str) => {
     .toLowerCase();
 };
 
-const checkIsRepeated = (arrData) => {
-  let isRepeted = false;
+// const checkIsRepeated = (arrData) => {
+//   let isRepeted = false;
 
-  for (let i = 0; i < arrData.length; i++) {
-    let newArr = [];
+//   for (let i = 0; i < arrData.length; i++) {
+//     let newArr = [];
+//     const normalizedI = normalizeStr(arrData[i]);
 
-    for (let j = i + 1; j < arrData.length; j++) {
-      if (normalizeStr(arrData[i]) === normalizeStr(arrData[j]))
-        isRepeted = true;
-      if (normalizeStr(arrData[i]) !== normalizeStr(arrData[j]))
-        isRepeted = false;
-      newArr.push(isRepeted);
-    }
-    // console.log("new arr:", newArr);
-    for (let key in newArr) {
-      if (newArr[key] === true) {
-        let newIndex = Number(key) + i + 1;
-        arrData.splice(newIndex, 1);
-      }
-    }
-  }
-  // console.log("array with unique value", arrData);
-  return arrData;
-};
+//     for (let j = i + 1; j < arrData.length; j++) {
+//       const normalizedJ = normalizeStr(arrData[j]);
+//       isRepeted = (normalizedI === normalizedJ);
+//       newArr.push(isRepeted);
+//     }
+//     // console.log("new arr:", newArr);
+//     for (let key in newArr) {
+//       if (newArr[key] === true) {
+//         let newIndex = Number(key) + i + 1;
+//         arrData.splice(newIndex, 1);
+//       }
+//     }
+//   }
+//   // console.log("array with unique value", arrData);
+//   return arrData;
+// };
 
 // filter recipes result
-const filterByName = (str, arrRecipes) => {
+const filterByName = (normalizedStr, arrRecipes) => {
   let filteredRecipesByName = [];
+  // const normalizedStr = normalizeStr(str);
   for (let recipe of arrRecipes) {
-    const normalizedStr = normalizeStr(str);
     const normalizedNameRecipe = normalizeStr(recipe.name);
     if (normalizedNameRecipe.includes(normalizedStr))
       filteredRecipesByName.push(recipe);
   }
-  console.log(filteredRecipesByName);
+  // console.log( filteredRecipesByName);
   return filteredRecipesByName;
 };
-const filterByDescription = (str, arrRecipes) => {
+const filterByDescription = (normalizedStr, arrRecipes) => {
   let filteredRecipesByDes = [];
+  // const normalizedStr = normalizeStr(str);
   for (let recipe of arrRecipes) {
-    const normalizedStr = normalizeStr(str);
+    
     const normalizedDescription = normalizeStr(recipe.description);
     if (normalizedDescription.includes(normalizedStr))
       filteredRecipesByDes.push(recipe);
   }
-  console.log(filteredRecipesByDes);
+  // console.log(filteredRecipesByDes);
   return filteredRecipesByDes;
 };
 
-const filterByIngredients = (str, arrRecipes) => {
+const filterByIngredients = (normalizedStr, arrRecipes) => {
   let filteredRecipesByIng = [];
-  const normalizedStr = normalizeStr(str);
+  // const normalizedStr = normalizeStr(str);
 
   for (let recipe of arrRecipes) {
     for (let el of recipe.ingredients) {
@@ -119,7 +119,7 @@ const filterByIngredients = (str, arrRecipes) => {
       }
     }
   }
-  console.log(filteredRecipesByIng);
+  // console.log(filteredRecipesByIng);
   return filteredRecipesByIng;
 };
 
@@ -158,7 +158,7 @@ const filterAllIngOptions = (arrRecipes) => {
     }
   }
   listOfIngOptions = [...new Set(listOfIngOptions)].sort();
-  checkIsRepeated(listOfIngOptions);
+  // checkIsRepeated(listOfIngOptions);
   console.log(listOfIngOptions);
   return listOfIngOptions;
 };
@@ -523,6 +523,7 @@ const cbGeneralSearch = (val, elInput) => {
   if (val === elInput.value) {
     // init data from DOM and filter lists
     const input = elInput.value;
+    const normalizedInput = normalizeStr(input)
 
     const domToRemove = [
       ulContainerIngredients,
@@ -544,9 +545,9 @@ const cbGeneralSearch = (val, elInput) => {
     // return concat list of all filtered recipe list
     currentRecipes = [
       ...new Set(
-        filterByName(input, currentRecipes)
-          .concat(filterByDescription(input, currentRecipes))
-          .concat(filterByIngredients(input, currentRecipes))
+        filterByName(normalizedInput, currentRecipes)
+          .concat(filterByDescription(normalizedInput, currentRecipes))
+          .concat(filterByIngredients(normalizedInput, currentRecipes))
       ),
     ];
     console.log(currentRecipes);
