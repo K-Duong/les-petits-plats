@@ -52,25 +52,18 @@ const normalizeStr = (str) => {
     .toLowerCase();
 };
 
-// const checkIsDuplicated = (arrData) => {
-//   let temp = arrData.map(data => normalizeStr(data));
-  
-//   temp.findIndex((item, index) => (temp.indexOf(item) !== index));
-// }
-// const arr = ['Duong', 'huy', 'hello', 'duong','Huy', 'lucie'];
-// console.log(checkIsDuplicated(arr));
 // Filter result :
-const filterByName = (str, arrRecipes) =>
-  arrRecipes.filter((recipe) => normalizeStr(recipe.name).includes(str));
-const filterByDescription = (str, arrRecipes) =>
-  arrRecipes.filter((recipe) => normalizeStr(recipe.description).includes(str));
-const filterByIngredients = (str, arrRecipes) => {
+const filterByName = (normalizedStr, arrRecipes) =>
+  arrRecipes.filter((recipe) => normalizeStr(recipe.name).includes(normalizedStr));
+const filterByDescription = (normalizedStr, arrRecipes) =>
+  arrRecipes.filter((recipe) => normalizeStr(recipe.description).includes(normalizedStr));
+const filterByIngredients = (normalizedStr, arrRecipes) => {
   
   return arrRecipes.filter((recipe) => {
     const ingsList = recipe.ingredients.map((ing) =>
       normalizeStr(ing.ingredient)
     );
-    if (ingsList.some((ing) => ing.includes(str))) return recipe;
+    if (ingsList.some((ing) => ing.includes(normalizedStr))) return recipe;
   });
 };
 const filterByAppliance = (str, arrRecipes) =>
@@ -266,26 +259,23 @@ const removeElement = (e) => {
       const index1 = selectedIngredients.indexOf(target.dataset.name);
       selectedIngredients.splice(index1, 1);
       inputIngredient.value = "";
-    }
-    if (ul === ulContainerAppliances) {
+    }else if (ul === ulContainerAppliances) {
       const index1 = selectedAppliances.indexOf(target.dataset.name);
       selectedAppliances.splice(index1, 1);
       inputAppliance.value = "";
-    }
-    if (ul === ulContainerUstensils) {
+    }else if (ul === ulContainerUstensils) {
       const index1 = selectedUstensils.indexOf(target.dataset.name);
       selectedUstensils.splice(index1, 1);
       inputAppliance.value = "";
     }
-  }
   // if remove a tag name
-  if (!ul) {
+
+  } else {
     // update new list of options
     // find removed element and removed this option from selected lists
     allSelectedOptions.forEach((arrOptions) => {
       const index1 = arrOptions.indexOf(elName);
-      if (index1 === -1) return;
-      if (index1 !== -1) arrOptions.splice(index1, 1);
+      if (index1 > -1) arrOptions.splice(index1, 1);
     });
   }
 
@@ -300,24 +290,25 @@ const removeElement = (e) => {
     if (selectedList.length > 0) {
       if (selectedList === selectedIngredients) {
         selectedList.forEach((el) => {
+          const normalizedEl = normalizeStr(el);
           recipesAdvancedSearch = filterByIngredients(
-            normalizeStr(el),
+            normalizedEl,
             recipesAdvancedSearch
           );
         });
-      }
-      if (selectedList === selectedAppliances) {
+      }else if (selectedList === selectedAppliances) {
         selectedList.forEach((el) => {
+          const normalizedEl = normalizeStr(el);
           recipesAdvancedSearch = filterByAppliance(
-            normalizeStr(el),
+            normalizedEl,
             recipesAdvancedSearch
           );
         });
-      }
-      if (selectedList === selectedUstensils) {
+      }else if (selectedList === selectedUstensils) {
         selectedList.forEach((el) => {
+          const normalizedEl = normalizeStr(el);
           recipesAdvancedSearch = filterByUstensil(
-            normalizeStr(el),
+            normalizedEl,
             recipesAdvancedSearch
           );
         });
@@ -363,30 +354,29 @@ const selectElement = (e) => {
   //  target = li or button
   const target = e.target.closest("[data-name]");
   const elName = target.dataset.name;
+  const normalizedElName = normalizeStr(elName);
 
   //1. update data
   ////1.1 list of selected Options
   //TODO: check if elName has been already selected ?
   if (listOfIngOptions.includes(elName)) {
     recipesAdvancedSearch = filterByIngredients(
-      normalizeStr(elName),
+      normalizedElName,
       recipesAdvancedSearch
     );
     selectedIngredients.push(elName);
     inputIngredient.value = "";
-  }
-  if (listOfAppOptions.includes(elName)) {
+  }else if (listOfAppOptions.includes(elName)) {
     recipesAdvancedSearch = filterByAppliance(
-      normalizeStr(elName),
+      normalizedElName,
       recipesAdvancedSearch
     );
     selectedAppliances.push(elName);
 
     inputAppliance.value = "";
-  }
-  if (listOfUstOptions.includes(elName)) {
+  }else if (listOfUstOptions.includes(elName)) {
     recipesAdvancedSearch = filterByUstensil(
-      normalizeStr(elName),
+      normalizedElName,
       recipesAdvancedSearch
     );
     selectedUstensils.push(elName);
@@ -510,13 +500,11 @@ const cbAdvancedSearch = (val, elInput, ulContainer) => {
       suggestionList = listOfIngOptions.filter((option) =>
         normalizeStr(option).includes(normalizeInput)
       );
-    }
-    if (ulContainer === ulContainerAppliances) {
+    }else if (ulContainer === ulContainerAppliances) {
       suggestionList = listOfAppOptions.filter((option) =>
         normalizeStr(option).includes(normalizeInput)
       );
-    }
-    if (ulContainer === ulContainerUstensils) {
+    }else if (ulContainer === ulContainerUstensils) {
       suggestionList = listOfUstOptions.filter((option) =>
         normalizeStr(option).includes(normalizeInput)
       );
