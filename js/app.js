@@ -123,19 +123,18 @@ const filterByIngredients = (normalizedStr, arrRecipes) => {
   return filteredRecipesByIng;
 };
 
-const filterByAppliance = (str, arrRecipes) => {
+const filterByAppliance = (normalizedStr, arrRecipes) => {
   let filteredRecipesByApp = [];
   for (let recipe of arrRecipes) {
-    if (normalizeStr(recipe.appliance).includes(normalizeStr(str))) {
+    if (normalizeStr(recipe.appliance).includes(normalizedStr)) {
       filteredRecipesByApp.push(recipe);
     }
   }
   console.log(filteredRecipesByApp);
   return filteredRecipesByApp;
 };
-const filterByUstensil = (str, arrRecipes) => {
+const filterByUstensil = (normalizedStr, arrRecipes) => {
   let filteredRecipesByUst = [];
-  const normalizedStr = normalizeStr(str);
   for (let recipe of arrRecipes) {
     for (let ustensil of recipe.ustensils) {
       if (normalizeStr(ustensil).includes(normalizedStr)) {
@@ -144,8 +143,7 @@ const filterByUstensil = (str, arrRecipes) => {
       }
     }
   }
-
-  console.log("filtered recipe from ustensils list", filteredRecipesByUst);
+  // console.log("filtered recipe from ustensils list", filteredRecipesByUst);
   return filteredRecipesByUst;
 };
 
@@ -159,7 +157,7 @@ const filterAllIngOptions = (arrRecipes) => {
   }
   listOfIngOptions = [...new Set(listOfIngOptions)].sort();
   // checkIsRepeated(listOfIngOptions);
-  console.log(listOfIngOptions);
+  console.log("liste des ingrédients", listOfIngOptions);
   return listOfIngOptions;
 };
 
@@ -169,7 +167,7 @@ const filterAllAppOptions = (arrRecipes) => {
     listOfAppOptions.push(recipe.appliance);
   }
   listOfAppOptions = [...new Set(listOfAppOptions)].sort();
-  console.log(listOfAppOptions);
+  console.log("liste des appareils",listOfAppOptions);
   return listOfAppOptions;
 };
 const filterAllUstOptions = (arrRecipes) => {
@@ -180,7 +178,7 @@ const filterAllUstOptions = (arrRecipes) => {
     }
   }
   listOfUstOptions = [...new Set(listOfUstOptions)].sort();
-  console.log(listOfUstOptions);
+  console.log("liste des ustensiles",listOfUstOptions);
   return listOfUstOptions;
 };
 
@@ -357,40 +355,29 @@ const removeElement = (e) => {
       selectedIngredients.splice(index1, 1);
 
       inputIngredient.value = "";
-    }
-    if (ul === ulContainerAppliances) {
+    } else if (ul === ulContainerAppliances) {
       const index1 = selectedAppliances.indexOf(target.dataset.name);
       selectedAppliances.splice(index1, 1);
 
       inputAppliance.value = "";
-    }
-    if (ul === ulContainerUstensils) {
+    } else if (ul === ulContainerUstensils) {
       const index1 = selectedUstensils.indexOf(target.dataset.name);
       selectedUstensils.splice(index1, 1);
 
       inputAppliance.value = "";
     }
-  }
-  // if remove a tag name
-  if (!ul) {
+      // if remove a tag name
+  } else {
     // update new list of options
     // find removed element and removed this option from selected lists
     for (let optionList of allSelectedOptions) {
-      console.log("option list", optionList);
+      // console.log("option list", optionList);
       const index1 = optionList.indexOf(elName);
-      console.log("index1", index1);
-
       if (index1 > -1) {
         optionList.splice(index1, 1);
       }
     }
-    // allSelectedOptions.forEach((arrOptions) => {
-    //   const index1 = arrOptions.indexOf(elName);
-
-    //   if (index1 === -1) return;
-    //   if (index1 !== -1) arrOptions.splice(index1, 1);
-    // });
-  }
+   }
 
   // update listOfTagItems and display new result to interface
   const index2 = listOfTagItems.findIndex((el) => el === target.dataset.name);
@@ -403,24 +390,25 @@ const removeElement = (e) => {
     if (selectedList.length > 0) {
       if (selectedList === selectedIngredients) {
         for (let el of selectedList) {
+          const normalizedEl = normalizeStr(el);
           recipesAdvancedSearch = filterByIngredients(
-            normalizeStr(el),
+            normalizedEl,
             recipesAdvancedSearch
           );
         }
-      }
-      if (selectedList === selectedAppliances) {
+      } else if (selectedList === selectedAppliances) {
         for (let el of selectedList) {
+          const normalizedEl = normalizeStr(el);
           recipesAdvancedSearch = filterByAppliance(
-            normalizeStr(el),
+            normalizedEl,
             recipesAdvancedSearch
           );
         }
-      }
-      if (selectedList === selectedUstensils) {
+      } else if (selectedList === selectedUstensils) {
         for (let el of selectedList) {
+          const normalizedEl = normalizeStr(el);
           recipesAdvancedSearch = filterByUstensil(
-            normalizeStr(el),
+            normalizedEl,
             recipesAdvancedSearch
           );
         }
@@ -456,7 +444,7 @@ const selectElement = (e) => {
   //  target = li or button
   const target = e.target.closest("[data-name]");
   const elName = target.dataset.name;
-  // console.log("advanced search results:", recipesAdvancedSearch);
+  const normalizedEl = normalizeStr(elName)
 
   //1. update data
   ////1.1 list of selected Options
@@ -464,23 +452,21 @@ const selectElement = (e) => {
   if (listOfIngOptions.includes(elName)) {
     selectedIngredients.push(elName);
     recipesAdvancedSearch = filterByIngredients(
-      normalizeStr(elName),
+      normalizedEl,
       recipesAdvancedSearch
     );
     inputIngredient.value = "";
-  }
-  if (listOfAppOptions.includes(elName)) {
+  } else if (listOfAppOptions.includes(elName)) {
     selectedAppliances.push(elName);
     recipesAdvancedSearch = filterByAppliance(
-      normalizeStr(elName),
+      normalizedEl,
       recipesAdvancedSearch
     );
     inputAppliance.value = "";
-  }
-  if (listOfUstOptions.includes(elName)) {
+  } else if (listOfUstOptions.includes(elName)) {
     selectedUstensils.push(elName);
     recipesAdvancedSearch = filterByUstensil(
-      normalizeStr(elName),
+      normalizedEl,
       recipesAdvancedSearch
     );
     inputUstensil.value = "";
@@ -560,13 +546,10 @@ const cbGeneralSearch = (val, elInput) => {
       // display interface
       /// 1.list of options for:
       ////1.1. Ingredients options
-      // console.log(listOfIngOptions);
       displayOptionsList(listOfIngOptions, ulContainerIngredients);
       ////1.2. Appliances options
-      // console.log(listOfAppOptions);
       displayOptionsList(listOfAppOptions, ulContainerAppliances);
       ////1.3. Ustensils options
-      // console.log(listOfUstOptions);
       displayOptionsList(listOfUstOptions, ulContainerUstensils);
 
       /// 2. update number of found recipes
@@ -604,15 +587,13 @@ const cbAdvancedSearch = (val, elInput, ulContainer) => {
           suggestionList.push(option);
         }
       }
-    }
-    if (ulContainer === ulContainerAppliances) {
+    }else if (ulContainer === ulContainerAppliances) {
       for (let option of listOfAppOptions) {
         if (normalizeStr(option).includes(normalizeInput)) {
           suggestionList.push(option);
         }
       }
-    }
-    if (ulContainer === ulContainerUstensils) {
+    }else if (ulContainer === ulContainerUstensils) {
       for (let option of listOfUstOptions) {
         if (normalizeStr(option).includes(normalizeInput)) {
           suggestionList.push(option);

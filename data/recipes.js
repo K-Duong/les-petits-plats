@@ -291,7 +291,7 @@ const recipes = [
                "unit": "grammes"
            },
            {
-                "ingredient": "farine",
+                "ingredient": "Farine",
                 "quantity": 90,
                 "unit": "grammes"
            }
@@ -529,7 +529,7 @@ const recipes = [
                 "quantity": 3
             },
             {
-                "ingredient": "Farine",
+                "ingredient": "arine",
                 "quantity": 250,
                 "unit": "grammes"
             },
@@ -1553,7 +1553,7 @@ const recipes = [
                 "unit":"grammes"
             },
             {
-                "ingredient": "farine",
+                "ingredient": "Farine",
                 "quantity": 40,
                 "unit": "grammes"
             }
