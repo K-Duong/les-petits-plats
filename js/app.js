@@ -43,7 +43,6 @@ const closeCollapseMenu = () => {
     removeClassList(menu, "show");
   });
 };
-// TODO: appliquer dans la liste des ingrédient ex: lait de coco - corriger les données si besoin
 const normalizeStr = (str) => {
   return str
     .trim()
@@ -584,6 +583,7 @@ const init = () => {
 
   addEHandlerSearchBar();
   displayCardRecipes(currentRecipes);
+  updateNumberOfFoundRecipes(currentRecipes);
 };
 
 init();
