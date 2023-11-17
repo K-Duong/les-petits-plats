@@ -19,11 +19,11 @@ const config1 = [
   },
 
 ];
-const config2 = Array(5000).fill({
+const config2 = Array(500000).fill({
   inpSBar: "coco",
-    ingredients : ["carottes"],
-    appliances : ["cocotte"],
-    ustensils : ["couteau"],
+  ingredients : ["carottes"],
+  appliances : ["cocotte"],
+  ustensils : ["couteau"],
 })
 const times = [];
 for (let i=0; i < config2.length; i++) {
@@ -39,4 +39,4 @@ for (let i=0; i < config2.length; i++) {
   const execTimeMs = t1 - t0;
   times.push(execTimeMs)
 };
-console.log(times, times.reduce((a, c) => a + c, 0/times.length));
+console.log(times.reduce((a, c) => a + c, 0/times.length));
