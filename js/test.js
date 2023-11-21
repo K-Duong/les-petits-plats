@@ -40,4 +40,4 @@ for (let i=0; i < config2.length; i++) {
   const execTimeMs = t1 - t0;
   times.push(execTimeMs)
 };
-console.log(times.reduce((a, c) => a + c, 0/times.length));
+console.log("test with filter array methods", times.reduce((a, c) => a + c, 0/times.length));
