@@ -39,4 +39,4 @@ for (let i=0; i < config2.length; i++) {
   const execTimeMs = t1 - t0;
   times.push(execTimeMs)
 };
-console.log(times.reduce((a, c) => a + c, 0/times.length));
+console.log("result with for loop", times.reduce((a, c) => a + c, 0/times.length));
