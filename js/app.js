@@ -57,7 +57,6 @@ const filterByName = (normalizedStr, arrRecipes) =>
 const filterByDescription = (normalizedStr, arrRecipes) =>
   arrRecipes.filter((recipe) => normalizeStr(recipe.description).includes(normalizedStr));
 const filterByIngredients = (normalizedStr, arrRecipes) => {
-  
   return arrRecipes.filter((recipe) => {
     const ingsList = recipe.ingredients.map((ing) =>
       normalizeStr(ing.ingredient)
@@ -65,54 +64,19 @@ const filterByIngredients = (normalizedStr, arrRecipes) => {
     if (ingsList.some((ing) => ing.includes(normalizedStr))) return recipe;
   });
 };
-const filterByAppliance = (str, arrRecipes) =>
-  arrRecipes.filter((recipe) =>
-    normalizeStr(recipe.appliance).includes(normalizeStr(str))
-  );
-const filterByUstensil = (str, arrRecipes) => {
+const filterByAppliance = (normalizedStr, arrRecipes) => {
+  return arrRecipes.filter((recipe) =>
+    normalizeStr(recipe.appliance).includes(normalizedStr)
+  );}
+const filterByUstensil = (normalizedStr, arrRecipes) => {
   return arrRecipes.filter((recipe) => {
     const ustensilsList = recipe.ustensils.map((el) => normalizeStr(el));
     const ustensilFilterCondition = ustensilsList.some((el) =>
-      el.includes(str)
+      el.includes(normalizedStr)
     );
     if (ustensilFilterCondition) return recipe;
   });
 };
-// TODO: recreate function
-// const findByIng = (str, data) => {
-//   const ingredientsList = data.ingredients.map((ing) =>
-//     normalizeStr(ing.ingredient)
-//   );
-//   // console.log(ingredientsList);
-//   const ingFilterConditon = ingredientsList.some((ing) => ing.includes(str));
-//   if (ingFilterConditon) return ingFilterConditon;
-// };
-// const findByAppliance = (str, data) => {
-//   const applianceRecipe = normalizeStr(data.appliance);
-//   const applianceFilterCondition = applianceRecipe.includes(str);
-//   // console.log(applianceFilterCondition);
-//   if (applianceFilterCondition) return applianceFilterCondition;
-// };
-// const findByUstensil = (str, data) => {
-//   const ustensilsList = data.ustensils.map((el) => normalizeStr(el));
-//   const ustensilFilterCondition = ustensilsList.some((el) => el.includes(str));
-//   if (ustensilFilterCondition) return ustensilFilterCondition;
-// };
-//filter list of options
-// const filterAllIngOptions = (currentRecipes) => {
-//   let tempArr = [
-//   ...new Set(
-//     currentRecipes
-//       .map((recipe) =>
-//         recipe.ingredients.map((ingredients) => ingredients.ingredient)
-//       )
-//       .reduce((acc, curr) => acc.concat(curr))
-//       .sort()
-//   ),
-// ];
-//  checkIsDuplicated(tempArr);
-//  console.log("temp,", tempArr);
-// }
 
 const filterAllIngOptions = (currentRecipes) => [
     ...new Set(
@@ -159,7 +123,7 @@ const updateNumberOfFoundRecipes = (arrRecipes) => {
       arrRecipes.length.toString().padStart(2, "0") +
       `${arrRecipes.length === 1 ? " recette trouvée" : " recettes trouvées"} `;
   } else if (arrRecipes.length === 0) {
-    numOfFoundRecipes.textContent = "00 recette retrouvée";
+    numOfFoundRecipes.textContent = "0 recette retrouvée";
   } else {
     numOfFoundRecipes.textContent = "1500 recettes";
   }
@@ -311,8 +275,8 @@ const removeElement = (e) => {
             recipesAdvancedSearch
           );
         });
-      }
-    }
+      };
+    };
     if (selectedList.length === 0) {
       recipesAdvancedSearch = recipesAdvancedSearch;
     }
@@ -357,7 +321,6 @@ const selectElement = (e) => {
 
   //1. update data
   ////1.1 list of selected Options
-  //TODO: check if elName has been already selected ?
   if (listOfIngOptions.includes(elName)) {
     recipesAdvancedSearch = filterByIngredients(
       normalizedElName,
