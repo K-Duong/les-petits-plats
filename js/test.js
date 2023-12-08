@@ -19,7 +19,7 @@ const config1 = [
   },
 
 ];
-const config2 = Array(5000).fill({
+const config2 = Array(20000).fill({
   inpSBar: "coco",
     ingredients : ["carottes", "lait"],
     appliances : ["cocotte"],
