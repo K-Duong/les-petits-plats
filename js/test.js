@@ -19,7 +19,7 @@ const config1 = [
   },
 
 ];
-const config2 = Array(5000).fill({
+const config2 = Array(20000).fill({
   inpSBar: "coco",
   ingredients : ["carottes"],
   appliances : ["cocotte"],
@@ -39,4 +39,4 @@ for (let i=0; i < config2.length; i++) {
   const execTimeMs = t1 - t0;
   times.push(execTimeMs)
 };
-console.log("result with for loop", times.reduce((a, c) => a + c, 0/times.length));
+console.log("test with for loop", times.reduce((a, c) => a + c, 0/times.length));

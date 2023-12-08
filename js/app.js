@@ -23,9 +23,6 @@ const accordionBodyDoms = document.querySelectorAll(".accordion-body");
 //variables
 let currentRecipes, currentListOfTagName, recipesAdvancedSearch;
 
-// let filteredRecipesByApp = [];
-// let filteredRecipesByUst = [];
-
 let selectedIngredients = [];
 let selectedAppliances = [];
 let selectedUstensils = [];
@@ -56,30 +53,6 @@ const normalizeStr = (str) => {
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase();
 };
-
-// const checkIsRepeated = (arrData) => {
-//   let isRepeted = false;
-
-//   for (let i = 0; i < arrData.length; i++) {
-//     let newArr = [];
-//     const normalizedI = normalizeStr(arrData[i]);
-
-//     for (let j = i + 1; j < arrData.length; j++) {
-//       const normalizedJ = normalizeStr(arrData[j]);
-//       isRepeted = (normalizedI === normalizedJ);
-//       newArr.push(isRepeted);
-//     }
-//     // console.log("new arr:", newArr);
-//     for (let key in newArr) {
-//       if (newArr[key] === true) {
-//         let newIndex = Number(key) + i + 1;
-//         arrData.splice(newIndex, 1);
-//       }
-//     }
-//   }
-//   // console.log("array with unique value", arrData);
-//   return arrData;
-// };
 
 // filter recipes result
 const filterByName = (normalizedStr, arrRecipes) => {
@@ -182,48 +155,6 @@ const filterAllUstOptions = (arrRecipes) => {
   return listOfUstOptions;
 };
 
-// // TODO: recreate function
-// // const findByIng = (str, data) => {
-// //   const ingredientsList = data.ingredients.map((ing) =>
-// //     normalizeStr(ing.ingredient)
-// //   );
-// //   // console.log(ingredientsList);
-// //   const ingFilterConditon = ingredientsList.some((ing) => ing.includes(str));
-// //   if (ingFilterConditon) return ingFilterConditon;
-// // };
-// // const findByAppliance = (str, data) => {
-// //   const applianceRecipe = normalizeStr(data.appliance);
-// //   const applianceFilterCondition = applianceRecipe.includes(str);
-// //   // console.log(applianceFilterCondition);
-// //   if (applianceFilterCondition) return applianceFilterCondition;
-// // };
-// // const findByUstensil = (str, data) => {
-// //   const ustensilsList = data.ustensils.map((el) => normalizeStr(el));
-// //   const ustensilFilterCondition = ustensilsList.some((el) => el.includes(str));
-// //   if (ustensilFilterCondition) return ustensilFilterCondition;
-// // };
-// //filter list of options
-// const filterAllIngOptions = (currentRecipes) => [
-//   ...new Set(
-//     currentRecipes
-//       .map((recipe) =>
-//         recipe.ingredients.map((ingredients) => ingredients.ingredient)
-//       )
-//       .reduce((acc, curr) => acc.concat(curr))
-//       .sort()
-//   ),
-// ];
-// const filterAllAppOptions = (currentRecipes) => [
-//   ...new Set(currentRecipes.map((recipe) => recipe.appliance)),
-// ];
-// const filterAllUstOptions = (currentRecipes) => [
-//   ...new Set(
-//     currentRecipes
-//       .map((recipe) => recipe.ustensils)
-//       .reduce((acc, cur) => acc.concat(cur))
-//       .sort()
-//   ),
-// ];
 // // functions for classList
 const addClassList = (el, ...nameOfClass) => {
   el.classList.add(...nameOfClass);
