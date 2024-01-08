@@ -1,7 +1,10 @@
 const cardRecipeTemplate = (recipe) => {
   const description = recipe.description.slice(0, 150);
   
-  return html = `<div class="col  ">
+  return html = `
+  
+  <div class="col">
+  <a href="#">
   <div class="card rounded-5 shadow pb-5">
     <div class="thumbnail-box">
       <span>${recipe.time} min</span>
@@ -22,11 +25,14 @@ const cardRecipeTemplate = (recipe) => {
           <span>${ing.ingredient}</span>
           <span class="text-body-tertiary">${quantity}${unit}</span>
           </div>
+       
         </div>
+        
         `
       }).join('')}
     </div>
   </div>
+  </a>
 </div>
 `
 }

@@ -605,6 +605,7 @@ const init = () => {
   currentRecipes = recipes;
 
   addEHandlerSearchBar();
+  updateNumberOfFoundRecipes(currentRecipes)
   displayCardRecipes(currentRecipes);
 };
 
