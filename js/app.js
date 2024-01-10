@@ -21,17 +21,10 @@ const collapseMenuUst = document.querySelector("#collapseMenuUstensils");
 const accordionBodyDoms = document.querySelectorAll(".accordion-body");
 
 //variables
-let currentRecipes, currentListOfTagName, recipesAdvancedSearch;
-
-let selectedIngredients = [];
-let selectedAppliances = [];
-let selectedUstensils = [];
-
-let listOfTagItems = [];
-
-let listOfIngOptions = [];
-let listOfAppOptions = [];
-let listOfUstOptions = [];
+let currentRecipes, recipesAdvancedSearch;
+let selectedIngredients, selectedAppliances, selectedUstensils;
+let listOfTagItems;
+let listOfIngOptions, listOfAppOptions, listOfUstOptions;
 
 /////////////// FUNCTIONS //////////////////
 // filter by Search Bar
@@ -572,14 +565,16 @@ const debounceAdvancedSearchByUstensil = (val, elInput, ulContainer) => {
 // ////search bar
 const addEHandlerSearchBar = () => {
   inputSearchBar.addEventListener("input", (e) => {
-    currentRecipes = recipes;
+    // currentRecipes = recipes;
     const value = e.target.value;
     // if input < 3 characters is not valid
     if (value.length < 3) {
+      numOfFoundRecipes.textContent = "00 recette retrouvée";
       removeInnerHTML(cardsRecipesContainer);
       cardsRecipesContainer.innerHTML = `<div class='col-12 text-center text-danger fs-4 fw-bold w-100'>Veuillez saisir au moins 3 caractères !</div>`;
     
     } else {
+    currentRecipes = recipes;
       // if input is valid
     debounce(value, e.target);
 
