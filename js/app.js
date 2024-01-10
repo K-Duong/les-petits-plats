@@ -508,17 +508,27 @@ const debounceAdvancedSearchByUstensil = (val, elInput, ulContainer) => {
 ////search bar
 const addEHandlerSearchBar = () => {
   inputSearchBar.addEventListener("input", (e) => {
-    currentRecipes = recipes;
     const value = e.target.value;
     // if input < 3 characters is not valid
-    if (value.length < 3) {
+    if (value.length < 3 & value.length > 0) {
+      numOfFoundRecipes.textContent = "00 recette retrouvée";
       removeInnerHTML(cardsRecipesContainer);
+      removeInnerHTML(tagContainer);
       cardsRecipesContainer.innerHTML = `<div class='col-12 text-center text-danger fs-4 fw-bold w-100'>Veuillez saisir au moins 3 caractères !</div>`;
     
+    } else if (value.length === 0) {
+      // if input is valid
+      currentRecipes = recipes;
+      removeInnerHTML(tagContainer);
+      displayCardRecipes(currentRecipes);
+      updateNumberOfFoundRecipes(currentRecipes);
+
+
     } else {
       // if input is valid
-    debounce(value, e.target);
-
+      currentRecipes = recipes;
+      debounce(value, e.target);
+    
     };
   });
 };
@@ -545,7 +555,6 @@ const addEventHandlerSearchByUstensil = () => {
 ////////////////// APP //////////////////
 const init = () => {
   currentRecipes = recipes;
-
   addEHandlerSearchBar();
   displayCardRecipes(currentRecipes);
   updateNumberOfFoundRecipes(currentRecipes);
