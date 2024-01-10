@@ -515,9 +515,15 @@ const addEHandlerSearchBar = () => {
     currentRecipes = recipes;
     const value = e.target.value;
     // if input < 3 characters is not valid
-    if (value.length < 3) return;
-    // if input is valid
+    if (value.length < 3) {
+      removeInnerHTML(cardsRecipesContainer);
+      cardsRecipesContainer.innerHTML = `<div class='col-12 text-center text-danger fs-4 fw-bold w-100'>Veuillez saisir au moins 3 caractères !</div>`;
+    
+    } else {
+      // if input is valid
     debounce(value, e.target);
+
+    };
   });
 };
 ////advanced search
