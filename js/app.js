@@ -21,7 +21,7 @@ const collapseMenuUst = document.querySelector("#collapseMenuUstensils");
 const accordionBodyDoms = document.querySelectorAll(".accordion-body");
 
 //general variables
-let currentRecipes, currentListOfTagName, recipesAdvancedSearch;
+let currentRecipes, recipesAdvancedSearch;
 let selectedIngredients, selectedAppliances, selectedUstensils;
 let listOfTagItems;
 let listOfIngOptions, listOfAppOptions, listOfUstOptions;
