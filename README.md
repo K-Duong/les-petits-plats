@@ -22,4 +22,4 @@ Allez au repo cloné :
 ```
 $ cd les-petits-plats
 ```
-Cliquez au live server et allez au port : http://127.0.0.1:5501/
+Cliquez au Go live et allez au port : http://127.0.0.1:5501/
