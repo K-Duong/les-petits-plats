@@ -12,6 +12,12 @@ Les deux versions correspondent aux branches suivantes :
 - test/algo1/filter-recipes-with-array-methods
 - test/algo2/filter-recipes-with-for-loop
 
+## Fiche des cas d'utilisation
+Vous pouvez consulter la fiche des ca d'utilisation [ici](https://course.oc-static.com/projects/516_JS/P7/Cas+d%E2%80%99utilisation+%2303+_+Filtrer+les+recettes+dans+l%E2%80%99interface+utilisateur+-+Front-end+P6+(Algorithms)+.pdf)
+
+## Démonstration du site 
+Une démonstration de la version actuelle du site est disponible  [ici](https://les-petits-plats-k-duong-trinh.netlify.app/)
+
 ## Installer l'environnement du projet :
 
 Clonez le projet : 
